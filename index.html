@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>万象森罗 V8.5 - 因果拆解旗舰</title>
+    <title>万象森罗 V8.5.1 - 逻辑加固版</title>
     <style>
         :root { 
             --bg: #050505; 
@@ -14,23 +14,12 @@
             --text-muted: #888;
         }
         body { background: var(--bg); color: #e0e0e0; font-family: "PingFang SC", "Segoe UI", serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        
         .container { max-width: 520px; width: 100%; position: relative; }
-        
-        /* 主控制台 */
         .console-card { 
-            background: var(--card-bg); 
-            border: 1px solid rgba(177, 151, 252, 0.2); 
-            border-radius: 24px; 
-            padding: 25px; 
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            backdrop-filter: blur(20px);
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.3s;
+            background: var(--card-bg); border: 1px solid rgba(177, 151, 252, 0.2); 
+            border-radius: 24px; padding: 25px; box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px); position: relative; overflow: hidden;
         }
-
-        /* 模式切换开关 */
         .mode-switch {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 20px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 12px;
@@ -44,19 +33,14 @@
         }
         #cruelMode.active { background: var(--danger); }
         #cruelMode.active::after { left: 27px; }
-
         h1 { font-size: 1.5rem; text-align: center; letter-spacing: 4px; margin: 0 0 5px 0; background: linear-gradient(to right, #fff, var(--main)); -webkit-background-clip: text; color: transparent; }
         .status-bar { font-size: 10px; text-align: center; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 20px; }
-
-        /* 输入区 */
         input[type="text"] { 
             width: 100%; padding: 16px; background: rgba(255,255,255,0.05); 
             border: 1px solid #444; border-radius: 12px; color: #fff; font-size: 15px; 
             box-sizing: border-box; outline: none; transition: 0.3s;
         }
         input:focus { border-color: var(--main); box-shadow: 0 0 15px rgba(177, 151, 252, 0.15); }
-
-        /* 启动按钮 */
         .launch-btn { 
             width: 100%; padding: 16px; margin-top: 15px;
             background: linear-gradient(135deg, #5830cc, #240046); 
@@ -66,8 +50,6 @@
         }
         .launch-btn:hover { box-shadow: 0 0 20px rgba(88, 48, 204, 0.4); transform: translateY(-2px); }
         .launch-btn.cruel { background: linear-gradient(135deg, #cc3030, #5a0000); }
-
-        /* 情报雷达动画 */
         .radar-container { display: none; margin: 20px auto; width: 100px; height: 100px; position: relative; }
         .radar-circle {
             width: 100%; height: 100%; border: 2px solid rgba(177,151,252,0.3); border-radius: 50%;
@@ -80,63 +62,49 @@
         }
         @keyframes scan { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .log-text { font-size: 12px; color: var(--main); text-align: center; margin-top: 10px; height: 20px; }
-
-        /* 结果展示区 */
         #resultArea { display: none; margin-top: 25px; animation: fadeInUp 0.8s ease; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* 卦象对撞 */
         .gua-clash { display: flex; justify-content: space-around; align-items: center; margin-bottom: 20px; }
         .gua-card { text-align: center; width: 45%; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 15px; }
         .gua-symbol { font-size: 50px; line-height: 1; margin-bottom: 5px; }
         .gua-name { font-size: 14px; font-weight: bold; }
         .gua-desc { font-size: 10px; color: #aaa; margin-top: 5px; }
-        
-        /* 概率天平 */
         .balance-bar { height: 6px; background: #333; border-radius: 3px; margin: 15px 0; position: relative; overflow: hidden; }
         .balance-fill { height: 100%; background: var(--main); width: 0%; transition: width 1.5s ease-out; }
         .balance-text { display: flex; justify-content: space-between; font-size: 12px; color: #aaa; }
-        
-        /* 因果拆解列表 */
         .factor-list { margin-top: 20px; border-top: 1px dashed #333; padding-top: 15px; }
         .factor-item { display: flex; align-items: flex-start; margin-bottom: 12px; font-size: 13px; line-height: 1.5; }
         .factor-icon { margin-right: 10px; font-size: 14px; }
         .factor-content { color: #ccc; }
         .cruel-tag { background: rgba(255, 71, 87, 0.2); color: var(--danger); padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-right: 5px; }
-
-        /* 设置面板 */
         #settingsPanel { display: none; background: #111; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed #444; }
         .link-btn { color: #666; font-size: 11px; text-decoration: underline; cursor: pointer; text-align: center; margin-top: 10px; }
-
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="console-card" id="mainCard">
-        <h1>万象森罗 V8.5</h1>
-        <div class="status-bar">CAUSAL ENGINE // ONLINE</div>
+        <h1>万象森罗 V8.5.1</h1>
+        <div class="status-bar">CAUSAL ENGINE // REINFORCED</div>
 
         <div class="mode-switch">
-            <div class="switch-label">
-                <span id="modeText">🔵 标准推演模式</span>
-            </div>
+            <div class="switch-label"><span id="modeText">🔵 标准推演模式</span></div>
             <div id="cruelMode" class="switch-btn" onclick="toggleMode()"></div>
         </div>
 
         <div id="settingsPanel">
-            <input type="password" id="ds_key" placeholder="在此粘贴 DeepSeek API Key (sk-...)">
-            <button onclick="saveKeys()" style="width:100%; padding:8px; margin-top:10px; background:#333; color:#fff; border:none; border-radius:8px;">💾 保存神经回路</button>
+            <input type="password" id="ds_key" placeholder="粘贴 DeepSeek API Key (sk-...)">
+            <button onclick="saveKeys()" style="width:100%; padding:8px; margin-top:10px; background:#333; color:#fff; border:none; border-radius:8px;">💾 保存逻辑核心</button>
         </div>
 
-        <input type="text" id="target" placeholder="🔮 输入观测目标 (如: DMD 4.8 实验数据)">
-        
+        <input type="text" id="target" placeholder="🔮 输入观测目标 (如: DMD 4.8 实验成功率)">
         <button onclick="igniteEngine()" id="launchBtn" class="launch-btn">启动因果拆解</button>
 
         <div id="radarArea" class="radar-container">
             <div class="radar-circle"></div>
             <div class="radar-scan"></div>
-            <div id="logText" class="log-text">正在校准零点能...</div>
+            <div id="logText" class="log-text"></div>
         </div>
 
         <div id="resultArea">
@@ -153,31 +121,21 @@
                     <div class="gua-desc">演化 / 现实坍缩</div>
                 </div>
             </div>
-
-            <div class="balance-text">
-                <span id="probLabel">因果成功率</span>
-                <span id="probValue">0%</span>
-            </div>
-            <div class="balance-bar">
-                <div id="probFill" class="balance-fill"></div>
-            </div>
-
+            <div class="balance-text"><span>因果成功率</span><span id="probValue">0%</span></div>
+            <div class="balance-bar"><div id="probFill" class="balance-fill"></div></div>
             <div id="factorList" class="factor-list"></div>
         </div>
         
-        <div class="link-btn" onclick="toggleSettings()">⚙️ 配置核心密钥</div>
+        <div class="link-btn" onclick="toggleSettings()">⚙️ 配置密钥核心</div>
     </div>
 </div>
 
 <script>
-// ================= 全局配置 =================
-const TAVILY_KEY = "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"; // 你的搜索Key
+const TAVILY_KEY = "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";
 let isCruel = false;
 
-// ================= 初始化 =================
 window.onload = () => {
     if(!localStorage.getItem('ds_key')) document.getElementById('settingsPanel').style.display = 'block';
-    updateTheme();
 }
 
 function toggleSettings() {
@@ -187,13 +145,8 @@ function toggleSettings() {
 
 function saveKeys() {
     const k = document.getElementById('ds_key').value;
-    if(k.startsWith('sk-')) {
-        localStorage.setItem('ds_key', k);
-        alert("✅ 智核连接成功");
-        toggleSettings();
-    } else {
-        alert("❌ 密钥格式错误");
-    }
+    if(k.startsWith('sk-')) { localStorage.setItem('ds_key', k); alert("✅ 智核已加固"); toggleSettings(); }
+    else alert("❌ 格式错误");
 }
 
 function toggleMode() {
@@ -201,161 +154,81 @@ function toggleMode() {
     const btn = document.getElementById('cruelMode');
     const txt = document.getElementById('modeText');
     const mainBtn = document.getElementById('launchBtn');
-    
-    if(isCruel) {
-        btn.classList.add('active');
-        txt.innerText = "🔴 冷酷对抗模式 (CRUEL MODE)";
-        txt.style.color = "var(--danger)";
-        mainBtn.classList.add('cruel');
-        mainBtn.innerText = "启动对抗性推演";
-        document.querySelector('.radar-scan').style.background = "linear-gradient(45deg, transparent 50%, rgba(255, 71, 87, 0.8) 100%)";
-    } else {
-        btn.classList.remove('active');
-        txt.innerText = "🔵 标准推演模式";
-        txt.style.color = "var(--text-muted)";
-        mainBtn.classList.remove('cruel');
-        mainBtn.innerText = "启动因果拆解";
-        document.querySelector('.radar-scan').style.background = "linear-gradient(45deg, transparent 50%, rgba(177, 151, 252, 0.8) 100%)";
-    }
+    btn.classList.toggle('active');
+    txt.innerText = isCruel ? "🔴 冷酷对抗模式" : "🔵 标准推演模式";
+    txt.style.color = isCruel ? "var(--danger)" : "var(--text-muted)";
+    mainBtn.classList.toggle('cruel');
+    document.querySelector('.radar-scan').style.background = isCruel ? 
+        "linear-gradient(45deg, transparent 50%, rgba(255, 71, 87, 0.8) 100%)" : 
+        "linear-gradient(45deg, transparent 50%, rgba(177, 151, 252, 0.8) 100%)";
 }
 
-// ================= 核心引擎逻辑 =================
 async function igniteEngine() {
     const target = document.getElementById('target').value;
     const dsKey = localStorage.getItem('ds_key');
-    
-    if(!target) return alert("请输入观测目标");
-    if(!dsKey) return alert("⚠️ 请先配置智核密钥");
+    if(!target || !dsKey) return alert("配置未完成");
 
-    // UI 状态切换
     document.getElementById('resultArea').style.display = 'none';
     document.getElementById('radarArea').style.display = 'block';
-    document.getElementById('launchBtn').disabled = true;
+    const btn = document.getElementById('launchBtn');
     const log = document.getElementById('logText');
+    btn.disabled = true;
 
     try {
-        // 1. 构造搜索策略 (根据模式不同)
-        log.innerText = isCruel ? "🔍 正在挖掘负面证据与干扰项..." : "🔍 正在扫描全网因果关联...";
-        
-        let searchQueries = [target];
-        if(isCruel) {
-            searchQueries.push(`${target} failures limitations discrepancies`);
-            searchQueries.push(`${target} experimental noise dissipation`);
-        } else {
-            searchQueries.push(`${target} future trends analysis`);
-        }
+        log.innerText = "📡 检索全网熵增项...";
+        const searchRes = await fetch('https://api.tavily.com/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ api_key: TAVILY_KEY, query: isCruel ? `${target} failure noise` : target, search_depth: "advanced" })
+        }).then(r => r.json()).catch(() => ({results:[]}));
 
-        // 2. 并行搜索 (搜索增强)
-        const searchPromises = searchQueries.map(q => 
-            fetch('https://api.tavily.com/search', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ api_key: TAVILY_KEY, query: q, search_depth: "advanced", max_results: 3 })
-            }).then(r => r.json())
-        );
+        const context = (searchRes.results || []).map(r => r.content).join("\n").substring(0, 2000);
         
-        const searchResults = await Promise.all(searchPromises);
-        const context = searchResults.flatMap(r => r.results).map(r => r.content).join("\n").substring(0, 3000);
-
-        // 3. 智核推演
-        log.innerText = isCruel ? "🧠 正在进行对抗性逻辑坍缩..." : "🧠 正在构建因果模型...";
-        
-        const systemPrompt = isCruel 
-            ? `你是一个冷酷、客观的物理/社会学引擎。你的任务是寻找目标事物的弱点、熵增点和失败概率。不要讨好用户。
-               必须返回严格的JSON：
-               {
-                 "gua1_sym": "本卦符号", "gua1_name": "本卦名",
-                 "gua2_sym": "变卦符号", "gua2_name": "变卦名(如果失败概率大，请选凶卦)",
-                 "probability": "成功率数值(0-100)",
-                 "factors": [
-                    {"type": "risk", "content": "干扰项1: 具体物理/逻辑缺陷"},
-                    {"type": "risk", "content": "干扰项2: 环境噪声或系统性风险"},
-                    {"type": "neutral", "content": "中性分析: 客观演化路径"}
-                 ]
-               }`
-            : `你是一个具有洞察力的万象引擎。分析事物的发展趋势。
-               必须返回严格的JSON：
-               {
-                 "gua1_sym": "本卦符号", "gua1_name": "本卦名",
-                 "gua2_sym": "变卦符号", "gua2_name": "变卦名",
-                 "probability": "成功率数值(0-100)",
-                 "factors": [
-                    {"type": "positive", "content": "有利因素"},
-                    {"type": "risk", "content": "潜在风险"},
-                    {"type": "advice", "content": "演化建议"}
-                 ]
-               }`;
-
+        log.innerText = "🧠 智核因果拆解中...";
         const aiRes = await fetch('https://api.deepseek.com/v1/chat/completions', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${dsKey}` },
             body: JSON.stringify({
                 model: "deepseek-chat",
                 messages: [
-                    { role: "system", content: systemPrompt },
-                    { role: "user", content: `推演目标: ${target}\n情报背景: ${context}` }
+                    { role: "system", content: `你是一个因果引擎。必须仅返回JSON：{"gua1_sym":"","gua1_name":"","gua2_sym":"","gua2_name":"","probability":0,"factors":[{"type":"risk/positive","content":""}]}` },
+                    { role: "user", content: `目标:${target}\n背景:${context}\n模式:${isCruel?'冷酷':'标准'}` }
                 ],
-                temperature: isCruel ? 0.4 : 1.1 // 冷酷模式低温，普通模式高温
+                temperature: isCruel ? 0.3 : 1.0
             })
         });
 
         const aiData = await aiRes.json();
-        let raw = aiData.choices[0].message.content;
-        raw = raw.replace(/```json/g, "").replace(/```/g, ""); // 清洗Markdown
+        if(!aiData.choices || !aiData.choices[0]) throw new Error("智核未响应，请检查Key余额或网络");
+
+        let raw = aiData.choices[0].message.content.replace(/```json/gi, "").replace(/```/gi, "").trim();
         const data = JSON.parse(raw);
 
-        // 4. 显化结果
-        renderResult(data);
+        // 渲染
+        document.getElementById('gua1_sym').innerText = data.gua1_sym;
+        document.getElementById('gua1_name').innerText = data.gua1_name;
+        document.getElementById('gua2_sym').innerText = data.gua2_sym;
+        document.getElementById('gua2_name').innerText = data.gua2_name;
+        document.getElementById('probValue').innerText = data.probability + "%";
+        document.getElementById('probFill').style.width = data.probability + "%";
+        
+        const list = document.getElementById('factorList');
+        list.innerHTML = "";
+        data.factors.forEach(f => {
+            const item = document.createElement('div');
+            item.className = "factor-item";
+            const tag = (isCruel && f.type==='risk') ? '<span class="cruel-tag">耗散</span>' : '';
+            item.innerHTML = `<span class="factor-icon">${f.type==='risk'?'🔻':'🔺'}</span><div class="factor-content">${tag}${f.content}</div>`;
+            list.appendChild(item);
+        });
 
+        document.getElementById('resultArea').style.display = 'block';
     } catch (err) {
-        console.error(err);
-        alert("因果推演中断: " + err.message);
+        alert("🚨 硅基演化中断：\n" + err.message);
     } finally {
         document.getElementById('radarArea').style.display = 'none';
-        document.getElementById('launchBtn').disabled = false;
+        btn.disabled = false;
     }
-}
-
-function renderResult(data) {
-    const area = document.getElementById('resultArea');
-    
-    // 卦象
-    document.getElementById('gua1_sym').innerText = data.gua1_sym;
-    document.getElementById('gua1_name').innerText = data.gua1_name;
-    document.getElementById('gua2_sym').innerText = data.gua2_sym;
-    document.getElementById('gua2_name').innerText = data.gua2_name;
-    
-    // 变卦颜色逻辑
-    const gua2El = document.getElementById('gua2_sym');
-    if(data.probability < 50) gua2El.style.color = "var(--danger)";
-    else gua2El.style.color = "var(--success)";
-
-    // 概率条
-    document.getElementById('probValue').innerText = data.probability + "%";
-    const fill = document.getElementById('probFill');
-    fill.style.width = "0%";
-    setTimeout(() => { fill.style.width = data.probability + "%"; }, 100);
-    fill.style.background = data.probability < 60 ? "var(--danger)" : "var(--success)";
-
-    // 因子列表
-    const list = document.getElementById('factorList');
-    list.innerHTML = "";
-    data.factors.forEach(f => {
-        const item = document.createElement('div');
-        item.className = "factor-item";
-        let icon = "🔹";
-        if(f.type === 'risk') icon = "🔻";
-        if(f.type === 'positive') icon = "🔺";
-        
-        // 冷酷模式下的风险高亮
-        let tag = "";
-        if(isCruel && f.type === 'risk') tag = `<span class="cruel-tag">耗散项</span>`;
-
-        item.innerHTML = `<span class="factor-icon">${icon}</span><div class="factor-content">${tag}${f.content}</div>`;
-        list.appendChild(item);
-    });
-
-    area.style.display = 'block';
 }
 </script>
 </body>
