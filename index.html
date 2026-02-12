@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>万象森罗 V7.5.1 - 硅基修复版</title>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <title>万象森罗 V7.6 - 硅基白嫖版</title>
     <style>
         :root { --main: #b197fc; --bg: #0a0a0a; }
         body { background: var(--bg); color: #e0e0e0; font-family: "PingFang SC", serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { max-width: 480px; width: 100%; }
-        .card { background: rgba(20,20,20,0.9); border: 1px solid #333; border-radius: 24px; padding: 30px; box-shadow: 0 0 30px rgba(177,151,252,0.1); }
-        h1 { font-size: 1.5rem; color: var(--main); text-align: center; letter-spacing: 4px; margin: 0; }
+        .card { background: rgba(20,20,20,0.95); border: 1px solid #333; border-radius: 24px; padding: 30px; box-shadow: 0 0 30px rgba(177,151,252,0.1); }
+        h1 { font-size: 1.6rem; color: var(--main); text-align: center; letter-spacing: 5px; margin: 0; }
         .subtitle { font-size: 10px; text-align: center; color: #555; margin-bottom: 20px; }
         input { background: #000; border: 1px solid #444; color: #fff; padding: 15px; border-radius: 12px; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
-        button { width: 100%; padding: 15px; background: var(--main); color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        #keyPanel { display: none; margin-bottom: 15px; padding: 15px; background: #1a1a1a; border-radius: 10px; border: 1px dashed var(--main); }
-        #resultArea { margin-top: 25px; display: none; }
-        .gua-symbol { font-size: 60px; color: var(--main); text-align: center; }
-        .section { margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; }
+        button { width: 100%; padding: 15px; background: linear-gradient(135deg, #4b0082, #240046); color: #fff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        button:disabled { opacity: 0.4; }
+        #keyPanel { display: none; margin-bottom: 20px; padding: 15px; background: #1a1a1a; border-radius: 12px; border: 1px dashed var(--main); }
+        #resultArea { margin-top: 30px; display: none; }
+        .gua-symbol { font-size: 80px; color: var(--main); text-align: center; margin-bottom: 10px; }
+        .section { margin-top: 20px; border-left: 2px solid var(--main); padding-left: 15px; }
         .title { color: var(--main); font-size: 12px; font-weight: bold; margin-bottom: 5px; }
-        .content { font-size: 14px; line-height: 1.6; color: #bbb; }
-        #status { display: none; color: var(--main); font-size: 12px; margin: 10px 0; text-align: center; }
+        .content { font-size: 14px; line-height: 1.7; color: #ccc; }
+        #status { display: none; color: var(--main); font-size: 12px; margin: 15px 0; text-align: center; }
     </style>
 </head>
 <body>
@@ -28,24 +28,24 @@
 <div class="container">
     <div class="card">
         <h1>万象森罗</h1>
-        <div class="subtitle">LOGIC CORE V7.5.1</div>
+        <div class="subtitle">SILICON-FLOW FREE CORE</div>
         
-        <div style="text-align: center; font-size: 12px; color: #888; cursor: pointer; margin-bottom: 15px;" onclick="toggleKeys()">⚙️ 配置硅基 Key</div>
+        <div style="text-align: center; font-size: 11px; color: #666; cursor: pointer; margin-bottom: 15px;" onclick="toggleKeys()">⚙️ 配置硅基 Key (赠送 1 元专用)</div>
         <div id="keyPanel">
             <input type="password" id="sf_key_input" placeholder="粘贴硅基流动 sk-...">
-            <button onclick="saveKeys()" style="background:#444; color:#fff; padding:8px;">💾 保存配置</button>
+            <button onclick="saveKeys()" style="background:#333; padding:8px;">💾 保存配置</button>
         </div>
 
-        <input type="text" id="target" placeholder="🔮 输入推演目标...">
-        <div id="status">正在同步因果频率...</div>
-        <button onclick="masterInference()" id="mainBtn">启动推演</button>
+        <input type="text" id="target" placeholder="🔮 请输入推演目标...">
+        <div id="status">⚡ 正在链接阿卡西记录...</div>
+        <button onclick="masterInference()" id="mainBtn">启动因果推演</button>
 
         <div id="resultArea">
             <div id="resSymbol" class="gua-symbol"></div>
-            <div id="resName" style="text-align:center; color:#fff; font-weight:bold; margin-bottom:15px;"></div>
-            <div class="section"><div class="title">⚖️ 解析</div><div id="resJudge" class="content"></div></div>
-            <div class="section"><div class="title">⚠️ 劫数</div><div id="resRisk" class="content"></div></div>
-            <div class="section"><div class="title">💡 指引</div><div id="resAdvice" class="content"></div></div>
+            <div id="resName" style="text-align:center; color:#fff; font-size:18px; font-weight:bold; margin-bottom:20px;"></div>
+            <div class="section"><div class="title">🧬 深度解析</div><div id="resJudge" class="content"></div></div>
+            <div class="section"><div class="title">💀 劫数</div><div id="resRisk" class="content"></div></div>
+            <div class="section"><div class="title">🧭 指引</div><div id="resAdvice" class="content"></div></div>
         </div>
     </div>
 </div>
@@ -54,62 +54,61 @@
 const TAVILY_KEY = "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";
 
 function toggleKeys() { const p = document.getElementById('keyPanel'); p.style.display = p.style.display === 'none' ? 'block' : 'none'; }
-function saveKeys() { const k = document.getElementById('sf_key_input').value; if(k.startsWith('sk-')) { localStorage.setItem('sf_key', k); alert("配置成功"); toggleKeys(); } else { alert("格式错误"); } }
+function saveKeys() { const k = document.getElementById('sf_key_input').value.trim(); if(k.startsWith('sk-')) { localStorage.setItem('sf_free_key', k); alert("硅基 Key 已就位"); toggleKeys(); } else { alert("格式错误"); } }
 
 async function masterInference() {
     const target = document.getElementById('target').value;
-    const sfKey = localStorage.getItem('sf_key');
-    if(!target || !sfKey) return alert("请确保已输入目标并配置了 Key");
+    const sfKey = localStorage.getItem('sf_free_key');
+    if(!target || !sfKey) return alert("配置未完成");
 
     const btn = document.getElementById('mainBtn');
     const status = document.getElementById('status');
     btn.disabled = true; status.style.display = 'block';
 
     try {
-        // 1. 搜索
+        // 1. 情报搜集
         const sRes = await fetch('https://api.tavily.com/search', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ api_key: TAVILY_KEY, query: target + " 深度分析", max_results: 3 })
+            body: JSON.stringify({ api_key: TAVILY_KEY, query: target + " 核心矛盾 趋势", search_depth: "basic" })
         });
         const sData = await sRes.json();
-        const context = sData.results.map(r => r.content).join("\n").substring(0, 2000);
+        const context = sData.results.map(r => r.content).join("\n").substring(0, 1500);
 
-        // 2. AI 调用 (修正了可能导致 undefined[0] 的逻辑)
+        // 2. 硅基流动“赠送额度”可用模型
         const aiRes = await fetch('https://api.siliconflow.cn/v1/chat/completions', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sfKey}` },
             body: JSON.stringify({
-                model: "deepseek-ai/DeepSeek-V3",
+                // 使用 Distill 模型，这是硅基流动赠送余额开放的最强系列
+                model: "deepseek-ai/DeepSeek-R1-Distill-Llama-8B", 
                 messages: [
-                    { role: "system", content: "你是一台万象森罗终端。请基于背景推演，必须直接返回JSON且不包含Markdown标记：{\"symbol\":\"卦符\",\"gua_name\":\"卦名\",\"judge\":\"解析\",\"risk\":\"劫数\",\"advice\":\"指引\"}" },
+                    { role: "system", content: "你是一台万象森罗终端。必须直接返回JSON且无Markdown：{\"symbol\":\"卦符\",\"gua_name\":\"卦名\",\"judge\":\"解析\",\"risk\":\"劫数\",\"advice\":\"指引\"}" },
                     { role: "user", content: `目标：${target}\n背景：${context}` }
                 ]
             })
         });
 
         const aiData = await aiRes.json();
-        
-        // --- 容错检查核心区 ---
-        if(!aiData.choices || !aiData.choices[0]) {
-            throw new Error(aiData.message || "硅基平台未返回有效数据，请检查余额");
-        }
+        if(aiData.error) throw new Error(aiData.error.message);
 
         let content = aiData.choices[0].message.content;
+        // 过滤 R1 可能会带出的 <think> 标签内容
+        content = content.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+        // 过滤 markdown
         content = content.replace(/```json/g, "").replace(/```/g, "").trim();
+        
         const result = JSON.parse(content);
 
-        // 3. 显化
         document.getElementById('resSymbol').innerText = result.symbol || "䷊";
-        document.getElementById('resName').innerText = result.gua_name || "推演成功";
+        document.getElementById('resName').innerText = result.gua_name || "推演结论";
         document.getElementById('resJudge').innerText = result.judge;
         document.getElementById('resRisk').innerText = result.risk;
         document.getElementById('resAdvice').innerText = result.advice;
         document.getElementById('resultArea').style.display = 'block';
 
     } catch (err) {
-        console.error(err);
-        alert("推演中断： " + err.message);
+        alert("硅基推演失败：" + err.message);
     } finally {
         btn.disabled = false; status.style.display = 'none';
     }
