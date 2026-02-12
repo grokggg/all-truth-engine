@@ -3,84 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>万象森罗 V7.5 - 天机具象</title>
+    <title>万象森罗 V7.5 - 硅基智核版</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root { --main: #b197fc; --bg: #0a0a0a; --glass: rgba(20, 20, 20, 0.8); }
         body { background: var(--bg); color: #e0e0e0; font-family: "PingFang SC", "Cinzel", serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        
         .container { max-width: 480px; width: 100%; position: relative; z-index: 2; }
-        
-        /* 核心卡片 - 赛博玄学风 */
-        .card { 
-            background: var(--glass); 
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(177, 151, 252, 0.3); 
-            border-radius: 24px; 
-            padding: 30px; 
-            box-shadow: 0 0 50px rgba(177, 151, 252, 0.15), inset 0 0 20px rgba(0,0,0,0.5); 
-            animation: breathe 4s infinite ease-in-out;
-        }
-
-        @keyframes breathe {
-            0%, 100% { box-shadow: 0 0 30px rgba(177, 151, 252, 0.1); border-color: rgba(177, 151, 252, 0.2); }
-            50% { box-shadow: 0 0 60px rgba(177, 151, 252, 0.3); border-color: rgba(177, 151, 252, 0.6); }
-        }
-
+        .card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(177, 151, 252, 0.3); border-radius: 24px; padding: 30px; box-shadow: 0 0 50px rgba(177, 151, 252, 0.15); animation: breathe 4s infinite ease-in-out; }
+        @keyframes breathe { 0%, 100% { border-color: rgba(177, 151, 252, 0.2); } 50% { border-color: rgba(177, 151, 252, 0.6); } }
         h1 { font-size: 1.8rem; color: var(--main); text-align: center; letter-spacing: 6px; margin: 0; text-shadow: 0 0 15px var(--main); }
-        .subtitle { font-size: 12px; text-align: center; color: #666; margin-bottom: 25px; letter-spacing: 3px; text-transform: uppercase; }
-
-        /* 输入区域 */
-        .input-group { position: relative; margin-bottom: 15px; }
-        input { 
-            background: rgba(0,0,0,0.5); border: 1px solid #333; color: #fff; 
-            padding: 16px; border-radius: 12px; font-size: 15px; width: 100%; 
-            box-sizing: border-box; transition: 0.3s; 
-            font-family: inherit;
-        }
-        input:focus { border-color: var(--main); outline: none; box-shadow: 0 0 15px rgba(177, 151, 252, 0.2); }
-
-        /* 按钮特效 */
-        button { 
-            width: 100%; padding: 16px; 
-            background: linear-gradient(135deg, #4b0082, #240046); 
-            color: #fff; border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 12px; font-weight: bold; margin-top: 10px; cursor: pointer; 
-            letter-spacing: 2px; transition: all 0.3s;
-            position: relative; overflow: hidden;
-        }
-        button::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg) translate(-100%, -100%); transition: 0.5s;
-        }
-        button:hover::after { transform: rotate(45deg) translate(100%, 100%); }
-        button:active { transform: scale(0.98); }
-
-        /* 密钥设置面板 */
-        #keyPanel { display: none; margin-bottom: 20px; padding: 15px; background: rgba(50,20,20,0.3); border-radius: 10px; border: 1px dashed #555; }
-        .key-link { text-align: center; font-size: 12px; color: #555; cursor: pointer; text-decoration: underline; margin-top: 5px; }
-
-        /* 结果区域 */
-        #resultArea { margin-top: 30px; display: none; animation: fadeIn 1s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* 卦象符号 */
-        .gua-symbol { 
-            font-size: 80px; line-height: 1; color: var(--main); 
-            text-align: center; margin-bottom: 10px; 
-            text-shadow: 0 0 20px var(--main);
-            font-family: "Segoe UI Symbol", sans-serif;
-        }
-        .gua-name { text-align: center; font-size: 18px; color: #fff; margin-bottom: 20px; letter-spacing: 5px; opacity: 0.9; }
-
-        .report-section { margin-top: 25px; border-left: 2px solid var(--main); padding-left: 15px; background: linear-gradient(90deg, rgba(177,151,252,0.05), transparent); }
-        .section-title { font-size: 13px; color: var(--main); font-weight: bold; margin-bottom: 8px; text-transform: uppercase; }
+        .subtitle { font-size: 10px; text-align: center; color: #666; margin-bottom: 25px; letter-spacing: 3px; }
+        input { background: rgba(0,0,0,0.5); border: 1px solid #333; color: #fff; padding: 16px; border-radius: 12px; font-size: 15px; width: 100%; box-sizing: border-box; margin-bottom: 15px; transition: 0.3s; }
+        input:focus { border-color: var(--main); outline: none; }
+        button { width: 100%; padding: 16px; background: linear-gradient(135deg, #4b0082, #240046); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-weight: bold; cursor: pointer; letter-spacing: 2px; transition: 0.3s; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        #keyPanel { display: none; margin-bottom: 20px; padding: 15px; background: rgba(30,30,30,0.5); border-radius: 10px; border: 1px dashed #555; }
+        .key-link { text-align: center; font-size: 12px; color: var(--main); cursor: pointer; text-decoration: underline; margin-bottom: 15px; display: block; }
+        #resultArea { margin-top: 30px; display: none; }
+        .gua-symbol { font-size: 80px; color: var(--main); text-align: center; margin-bottom: 10px; text-shadow: 0 0 20px var(--main); }
+        .gua-name { text-align: center; font-size: 18px; color: #fff; margin-bottom: 20px; letter-spacing: 5px; }
+        .report-section { margin-top: 25px; border-left: 2px solid var(--main); padding-left: 15px; }
+        .section-title { font-size: 12px; color: var(--main); font-weight: bold; margin-bottom: 5px; }
         .section-content { font-size: 14px; line-height: 1.7; color: #ccc; text-align: justify; }
-
         .loading-text { text-align: center; color: var(--main); font-size: 12px; margin-top: 15px; display: none; }
-        .blinking { animation: blink 1.5s infinite; }
-        @keyframes blink { 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
@@ -88,24 +33,22 @@
 <div class="container">
     <div class="card" id="captureArea">
         <h1>万象森罗</h1>
-        <div class="subtitle">V7.5 QUANTUM DIVINATION</div>
+        <div class="subtitle">V7.5 SILICON-INTELLIGENCE</div>
         
-        <div class="key-link" onclick="toggleKeys()">⚙️ 配置智核密钥 (首次必点)</div>
+        <span class="key-link" onclick="toggleKeys()">⚙️ 配置智核密钥 (填入硅基流动 Key)</span>
         <div id="keyPanel">
-            <input type="password" id="ds_key" placeholder="在此粘贴 DeepSeek API Key (sk-...)">
-            <div style="font-size:10px; color:#888; margin-top:5px;">*密钥仅保存在你的本地浏览器，只有你知道。</div>
-            <button onclick="saveKeys()" style="padding:8px; background:#333; margin-top:10px;">💾 保存配置</button>
+            <input type="password" id="ds_key" placeholder="在此粘贴硅基流动 API Key (sk-...)">
+            <button onclick="saveKeys()" style="padding:10px; background:#333;">💾 保存至本地</button>
         </div>
 
-        <input type="text" id="target" placeholder="🔮 请输入待解目标 (如: 2026年全球算力格局)">
+        <input type="text" id="target" placeholder="🔮 输入推演目标 (如: 南大案真凶画像)">
         
-        <div id="status" class="loading-text blinking">⚡ 正在链接阿卡西记录...</div>
-        <button onclick="masterInference()" id="mainBtn">启动因果推演</button>
+        <div id="status" class="loading-text">⚡ 智核正在全网搜寻因果碎片...</div>
+        <button onclick="masterInference()" id="mainBtn">启动智核推演</button>
 
         <div id="resultArea">
             <div id="resSymbol" class="gua-symbol"></div>
             <div id="resName" class="gua-name"></div>
-            
             <div class="report-section">
                 <div class="section-title">🧬 深度本质解析</div>
                 <div id="resJudge" class="section-content"></div>
@@ -123,16 +66,15 @@
 </div>
 
 <script>
-// =================配置区=================
-const TAVILY_KEY = "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"; // 你的搜索Key保持不变
-// =======================================
+// --- 核心配置 ---
+const TAVILY_KEY = "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"; 
+// ----------------
 
-// 页面加载时读取本地密钥
 window.onload = function() {
-    if(localStorage.getItem('ds_key')) {
-        document.getElementById('ds_key').value = localStorage.getItem('ds_key');
+    if(localStorage.getItem('sf_key')) {
+        document.getElementById('ds_key').value = localStorage.getItem('sf_key');
     } else {
-        document.getElementById('keyPanel').style.display = 'block'; // 没Key时自动展开
+        document.getElementById('keyPanel').style.display = 'block';
     }
 }
 
@@ -144,20 +86,20 @@ function toggleKeys() {
 function saveKeys() {
     const k = document.getElementById('ds_key').value;
     if(k.startsWith('sk-')) {
-        localStorage.setItem('ds_key', k);
-        alert("✅ 智核密钥已植入本地神经网。");
+        localStorage.setItem('sf_key', k);
+        alert("✅ 硅基智核密钥已就位。");
         toggleKeys();
     } else {
-        alert("❌ 密钥格式错误，必须以 sk- 开头");
+        alert("❌ 格式不正确，需以 sk- 开头");
     }
 }
 
 async function masterInference() {
     const target = document.getElementById('target').value;
-    const dsKey = localStorage.getItem('ds_key');
+    const sfKey = localStorage.getItem('sf_key');
     
     if(!target) return alert("请输入推演目标");
-    if(!dsKey) return alert("⚠️ 智核未启动！请点击上方‘配置智核密钥’填入 Key");
+    if(!sfKey) return alert("⚠️ 请先点击上方‘配置智核密钥’");
     
     const btn = document.getElementById('mainBtn');
     const status = document.getElementById('status');
@@ -168,71 +110,54 @@ async function masterInference() {
     status.style.display = 'block';
 
     try {
-        // 1. 猎取情报 (Tavily)
-        status.innerText = "🌐 正在全网抓取因果碎片...";
+        // 1. 抓取情报
+        status.innerText = "🌐 正在全网检索实时原矿...";
         const searchRes = await fetch('https://api.tavily.com/search', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 api_key: TAVILY_KEY, 
-                query: `${target} 深度分析 核心矛盾 未来趋势 隐秘内幕`, 
-                search_depth: "advanced",
-                max_results: 5
+                query: target + " 深度分析 核心矛盾 2026 现状", 
+                search_depth: "advanced"
             })
         });
         const searchData = await searchRes.json();
-        const context = searchData.results.map(r => `[${r.title}]: ${r.content}`).join("\n").substring(0, 3000);
+        const context = searchData.results.map(r => r.title + ": " + r.content).join("\n").substring(0, 3000);
 
-        // 2. 智核运算 (DeepSeek)
-        status.innerText = "🧠 智核接入中... 正在重组时空逻辑...";
-        
-        const aiRes = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        // 2. 硅基流动大脑调用
+        status.innerText = "🧠 硅基智核正在重组逻辑维度...";
+        const aiRes = await fetch('https://api.siliconflow.cn/v1/chat/completions', {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json', 
-                'Authorization': `Bearer ${dsKey}` 
+                'Authorization': `Bearer ${sfKey}` 
             },
             body: JSON.stringify({
-                model: "deepseek-chat",
+                model: "deepseek-ai/DeepSeek-V3", // 硅基免费/低价模型
                 messages: [
                     { 
                         role: "system", 
-                        content: `你是一台来自2050年的‘万象森罗’量子终端。你的任务是基于碎片情报，进行冷酷、深邃、带有宿命感的逻辑推演。
-                        
-                        请严格遵守以下 JSON 格式返回，不要包含 markdown 标记：
-                        {
-                            "symbol": "此处填入该事物对应的易经六十四卦符号（如 ䷀, ䷁, ䷂ 等，必须是Unicode字符）",
-                            "gua_name": "卦名（如：乾为天 · 潜龙勿用）",
-                            "judge": "深度本质解析（300字以内，结合情报，分析其底层逻辑与社会学隐喻，风格类似《三体》或《黑客帝国》）",
-                            "risk": "灰犀牛与劫数（指出被忽视的致命弱点或系统性崩塌风险）",
-                            "advice": "终极演化指引（给出上中下三策，语言简练有力）"
-                        }` 
+                        content: "你是一台万象森罗推演终端。请基于情报，以深邃、冷静、非线性的哲学口吻进行分析。必须返回JSON格式：{symbol:'卦符', gua_name:'卦名', judge:'解析', risk:'劫数', advice:'指引'}" 
                     },
-                    { role: "user", content: `推演目标：${target}\n情报原矿：${context}` }
+                    { role: "user", content: `目标：${target}\n背景：${context}` }
                 ],
-                temperature: 1.3 // 增加随机性，让回答更“妖”
+                response_format: { type: 'json_object' }
             })
         });
         
         const aiData = await aiRes.json();
-        
-        // 3. 数据清洗与显化
-        let rawContent = aiData.choices[0].message.content;
-        // 去除可能存在的 markdown 代码块标记
-        rawContent = rawContent.replace(/```json/g, "").replace(/```/g, "");
-        const result = JSON.parse(rawContent);
+        const result = JSON.parse(aiData.choices[0].message.content);
 
-        document.getElementById('resSymbol').innerText = result.symbol;
+        document.getElementById('resSymbol').innerText = result.symbol || "䷊";
         document.getElementById('resName').innerText = result.gua_name;
         document.getElementById('resJudge').innerText = result.judge;
         document.getElementById('resRisk').innerText = result.risk;
         document.getElementById('resAdvice').innerText = result.advice;
         
         resArea.style.display = 'block';
-
     } catch (err) {
+        alert("智核连接超时或Key无效，请检查硅基流动额度。");
         console.error(err);
-        alert("推演中断：可能是网络波动或密钥失效。\n错误详情：" + err.message);
     } finally {
         btn.disabled = false;
         status.style.display = 'none';
