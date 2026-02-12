@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>万象森罗 V8.5.1 - 逻辑加固版</title>
+    <title>万象森罗 V8.6 - 多核穹顶版</title>
     <style>
         :root { 
-            --bg: #050505; 
-            --card-bg: rgba(20, 20, 25, 0.9);
-            --main: #b197fc; 
-            --danger: #ff4757; 
-            --success: #2ed573;
-            --text-muted: #888;
+            --bg: #050505; --card-bg: rgba(20, 20, 25, 0.9);
+            --main: #b197fc; --danger: #ff4757; --success: #2ed573; --text-muted: #888;
         }
         body { background: var(--bg); color: #e0e0e0; font-family: "PingFang SC", "Segoe UI", serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .container { max-width: 520px; width: 100%; position: relative; }
@@ -22,46 +18,39 @@
         }
         .mode-switch {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 12px;
+            margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 12px;
         }
         .switch-label { font-size: 14px; color: var(--text-muted); }
-        .switch-btn {
-            position: relative; width: 50px; height: 26px; background: #333; border-radius: 20px; cursor: pointer; transition: 0.3s;
-        }
-        .switch-btn::after {
-            content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: 0.3s;
-        }
+        .switch-btn { position: relative; width: 50px; height: 26px; background: #333; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .switch-btn::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: 0.3s; }
         #cruelMode.active { background: var(--danger); }
         #cruelMode.active::after { left: 27px; }
         h1 { font-size: 1.5rem; text-align: center; letter-spacing: 4px; margin: 0 0 5px 0; background: linear-gradient(to right, #fff, var(--main)); -webkit-background-clip: text; color: transparent; }
         .status-bar { font-size: 10px; text-align: center; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 20px; }
-        input[type="text"] { 
-            width: 100%; padding: 16px; background: rgba(255,255,255,0.05); 
-            border: 1px solid #444; border-radius: 12px; color: #fff; font-size: 15px; 
-            box-sizing: border-box; outline: none; transition: 0.3s;
+        
+        input[type="text"], select { 
+            width: 100%; padding: 14px; background: rgba(255,255,255,0.05); 
+            border: 1px solid #444; border-radius: 12px; color: #fff; font-size: 14px; 
+            box-sizing: border-box; outline: none; transition: 0.3s; margin-bottom: 10px;
         }
-        input:focus { border-color: var(--main); box-shadow: 0 0 15px rgba(177, 151, 252, 0.15); }
+        input:focus, select:focus { border-color: var(--main); }
+        select { appearance: none; cursor: pointer; }
+        
         .launch-btn { 
-            width: 100%; padding: 16px; margin-top: 15px;
+            width: 100%; padding: 16px; margin-top: 10px;
             background: linear-gradient(135deg, #5830cc, #240046); 
             color: #fff; border: 1px solid rgba(255,255,255,0.1); 
             border-radius: 12px; font-weight: bold; cursor: pointer; 
             letter-spacing: 2px; transition: all 0.3s;
         }
-        .launch-btn:hover { box-shadow: 0 0 20px rgba(88, 48, 204, 0.4); transform: translateY(-2px); }
         .launch-btn.cruel { background: linear-gradient(135deg, #cc3030, #5a0000); }
+        
         .radar-container { display: none; margin: 20px auto; width: 100px; height: 100px; position: relative; }
-        .radar-circle {
-            width: 100%; height: 100%; border: 2px solid rgba(177,151,252,0.3); border-radius: 50%;
-            position: absolute; box-shadow: 0 0 15px rgba(177,151,252,0.1) inset;
-        }
-        .radar-scan {
-            width: 50%; height: 50%; background: linear-gradient(45deg, transparent 50%, rgba(177,151,252,0.8) 100%);
-            position: absolute; top: 0; left: 0; transform-origin: 100% 100%;
-            border-radius: 100% 0 0 0; animation: scan 2s infinite linear;
-        }
+        .radar-circle { width: 100%; height: 100%; border: 2px solid rgba(177,151,252,0.3); border-radius: 50%; position: absolute; }
+        .radar-scan { width: 50%; height: 50%; background: linear-gradient(45deg, transparent 50%, rgba(177,151,252,0.8) 100%); position: absolute; top: 0; left: 0; transform-origin: 100% 100%; border-radius: 100% 0 0 0; animation: scan 2s infinite linear; }
         @keyframes scan { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .log-text { font-size: 12px; color: var(--main); text-align: center; margin-top: 10px; height: 20px; }
+        
         #resultArea { display: none; margin-top: 25px; animation: fadeInUp 0.8s ease; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .gua-clash { display: flex; justify-content: space-around; align-items: center; margin-bottom: 20px; }
@@ -77,16 +66,17 @@
         .factor-icon { margin-right: 10px; font-size: 14px; }
         .factor-content { color: #ccc; }
         .cruel-tag { background: rgba(255, 71, 87, 0.2); color: var(--danger); padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-right: 5px; }
+        
         #settingsPanel { display: none; background: #111; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed #444; }
-        .link-btn { color: #666; font-size: 11px; text-decoration: underline; cursor: pointer; text-align: center; margin-top: 10px; }
+        .link-btn { color: #666; font-size: 11px; text-decoration: underline; cursor: pointer; text-align: center; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="console-card" id="mainCard">
-        <h1>万象森罗 V8.5.1</h1>
-        <div class="status-bar">CAUSAL ENGINE // REINFORCED</div>
+        <h1>万象森罗 V8.6</h1>
+        <div class="status-bar" id="topStatus">MULTICORE ENGINE // STANDBY</div>
 
         <div class="mode-switch">
             <div class="switch-label"><span id="modeText">🔵 标准推演模式</span></div>
@@ -94,11 +84,16 @@
         </div>
 
         <div id="settingsPanel">
-            <input type="password" id="ds_key" placeholder="粘贴 DeepSeek API Key (sk-...)">
-            <button onclick="saveKeys()" style="width:100%; padding:8px; margin-top:10px; background:#333; color:#fff; border:none; border-radius:8px;">💾 保存逻辑核心</button>
+            <select id="apiProvider" onchange="handleProviderChange()">
+                <option value="mock">🟢 本地沙盒模拟 (无需联网/无消耗)</option>
+                <option value="siliconflow">🔵 硅基流动 (SiliconFlow DeepSeek-V3)</option>
+                <option value="deepseek">🟣 DeepSeek 原厂 (官方 API)</option>
+            </select>
+            <input type="password" id="ds_key" placeholder="粘贴对应平台的 API Key (sk-...)">
+            <button onclick="saveKeys()" style="width:100%; padding:10px; margin-top:5px; background:#444; color:#fff; border:none; border-radius:8px; cursor:pointer;">💾 锁定智核路由</button>
         </div>
 
-        <input type="text" id="target" placeholder="🔮 输入观测目标 (如: DMD 4.8 实验成功率)">
+        <input type="text" id="target" placeholder="🔮 输入观测目标 (如: DMD 理论 4.8 实验)">
         <button onclick="igniteEngine()" id="launchBtn" class="launch-btn">启动因果拆解</button>
 
         <div id="radarArea" class="radar-container">
@@ -126,16 +121,32 @@
             <div id="factorList" class="factor-list"></div>
         </div>
         
-        <div class="link-btn" onclick="toggleSettings()">⚙️ 配置密钥核心</div>
+        <div class="link-btn" onclick="toggleSettings()">⚙️ 智核路由控制台</div>
     </div>
 </div>
 
 <script>
+// 全局配置
 const TAVILY_KEY = "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";
 let isCruel = false;
 
+// 引擎路由表
+const ENGINE_ROUTES = {
+    'deepseek': { url: 'https://api.deepseek.com/chat/completions', model: 'deepseek-chat' },
+    'siliconflow': { url: 'https://api.siliconflow.cn/v1/chat/completions', model: 'deepseek-ai/DeepSeek-V3' }
+};
+
 window.onload = () => {
-    if(!localStorage.getItem('ds_key')) document.getElementById('settingsPanel').style.display = 'block';
+    const savedProvider = localStorage.getItem('apiProvider') || 'mock';
+    const savedKey = localStorage.getItem('ds_key') || '';
+    
+    document.getElementById('apiProvider').value = savedProvider;
+    document.getElementById('ds_key').value = savedKey;
+    handleProviderChange(); // 初始化输入框状态
+    
+    if(savedProvider !== 'mock' && !savedKey) {
+        document.getElementById('settingsPanel').style.display = 'block';
+    }
 }
 
 function toggleSettings() {
@@ -143,10 +154,31 @@ function toggleSettings() {
     p.style.display = p.style.display === 'none' ? 'block' : 'none';
 }
 
+function handleProviderChange() {
+    const provider = document.getElementById('apiProvider').value;
+    const keyInput = document.getElementById('ds_key');
+    if (provider === 'mock') {
+        keyInput.style.display = 'none';
+        document.getElementById('topStatus').innerText = "ENGINE // LOCAL SANDBOX";
+    } else {
+        keyInput.style.display = 'block';
+        document.getElementById('topStatus').innerText = `ENGINE // ${provider.toUpperCase()}`;
+    }
+}
+
 function saveKeys() {
+    const provider = document.getElementById('apiProvider').value;
     const k = document.getElementById('ds_key').value;
-    if(k.startsWith('sk-')) { localStorage.setItem('ds_key', k); alert("✅ 智核已加固"); toggleSettings(); }
-    else alert("❌ 格式错误");
+    
+    localStorage.setItem('apiProvider', provider);
+    if (provider !== 'mock') {
+        if (!k.startsWith('sk-')) return alert("❌ API Key 格式错误");
+        localStorage.setItem('ds_key', k);
+    }
+    
+    alert(`✅ 智核已切换至: ${provider === 'mock' ? '本地沙盒' : provider}`);
+    toggleSettings();
+    handleProviderChange();
 }
 
 function toggleMode() {
@@ -165,8 +197,14 @@ function toggleMode() {
 
 async function igniteEngine() {
     const target = document.getElementById('target').value;
+    const provider = document.getElementById('apiProvider').value;
     const dsKey = localStorage.getItem('ds_key');
-    if(!target || !dsKey) return alert("配置未完成");
+    
+    if(!target) return alert("📡 请输入观测目标");
+    if(provider !== 'mock' && !dsKey) {
+        toggleSettings();
+        return alert("⚠️ 当前引擎需配置 API Key");
+    }
 
     document.getElementById('resultArea').style.display = 'none';
     document.getElementById('radarArea').style.display = 'block';
@@ -175,60 +213,102 @@ async function igniteEngine() {
     btn.disabled = true;
 
     try {
-        log.innerText = "📡 检索全网熵增项...";
+        // --- 1. 本地沙盒防御模式 ---
+        if (provider === 'mock') {
+            log.innerText = "🛡️ 启动本地沙盒算法...";
+            await new Promise(r => setTimeout(r, 2000)); // 模拟计算延迟
+            
+            const mockData = isCruel ? {
+                gua1_sym: "䷦", gua1_name: "山水蒙", gua2_sym: "䷃", gua2_name: "山风蛊", probability: 54,
+                factors: [
+                    {type: "risk", content: "高频剪切导致局部温度波动，削弱 DNA 结合能。"},
+                    {type: "risk", content: "实验存在相位滞后（Phase Lag）偏差的风险。"}
+                ]
+            } : {
+                gua1_sym: "䷗", gua1_name: "地雷复", gua2_sym: "䷊", gua2_name: "地天泰", probability: 82,
+                factors: [
+                    {type: "positive", content: "纯粹动力学模型在 3.0Hz 展现出良好的鲁棒性。"},
+                    {type: "advice", content: "建议持续关注环境噪声的过滤情况。"}
+                ]
+            };
+            return renderResult(mockData);
+        }
+
+        // --- 2. 真实 API 路由模式 ---
+        log.innerText = "📡 检索量子纠缠态...";
         const searchRes = await fetch('https://api.tavily.com/search', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ api_key: TAVILY_KEY, query: isCruel ? `${target} failure noise` : target, search_depth: "advanced" })
+            body: JSON.stringify({ api_key: TAVILY_KEY, query: isCruel ? `${target} failure noise discrepancy` : `${target} dynamics validation`, search_depth: "basic" })
         }).then(r => r.json()).catch(() => ({results:[]}));
 
-        const context = (searchRes.results || []).map(r => r.content).join("\n").substring(0, 2000);
+        const context = (searchRes.results || []).map(r => r.content).join("\n").substring(0, 1500);
         
-        log.innerText = "🧠 智核因果拆解中...";
-        const aiRes = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        log.innerText = `🧠 连接 ${provider} 核心算力...`;
+        const route = ENGINE_ROUTES[provider];
+
+        const aiRes = await fetch(route.url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${dsKey}` },
             body: JSON.stringify({
-                model: "deepseek-chat",
+                model: route.model,
                 messages: [
-                    { role: "system", content: `你是一个因果引擎。必须仅返回JSON：{"gua1_sym":"","gua1_name":"","gua2_sym":"","gua2_name":"","probability":0,"factors":[{"type":"risk/positive","content":""}]}` },
-                    { role: "user", content: `目标:${target}\n背景:${context}\n模式:${isCruel?'冷酷':'标准'}` }
+                    { role: "system", content: `你是一个因果引擎。请分析目标并直接返回纯JSON数据结构，不要使用Markdown标记（如 \`\`\`json）。格式如下：{"gua1_sym":"䷗","gua1_name":"地雷复","gua2_sym":"䷊","gua2_name":"地天泰","probability":85,"factors":[{"type":"risk","content":"风险说明"},{"type":"positive","content":"有利说明"}]}` },
+                    { role: "user", content: `目标:${target}\n背景:${context}\n要求:必须输出可以被JSON.parse解析的纯字符串。` }
                 ],
-                temperature: isCruel ? 0.3 : 1.0
+                temperature: isCruel ? 0.3 : 0.9
             })
         });
 
         const aiData = await aiRes.json();
-        if(!aiData.choices || !aiData.choices[0]) throw new Error("智核未响应，请检查Key余额或网络");
-
-        let raw = aiData.choices[0].message.content.replace(/```json/gi, "").replace(/```/gi, "").trim();
-        const data = JSON.parse(raw);
-
-        // 渲染
-        document.getElementById('gua1_sym').innerText = data.gua1_sym;
-        document.getElementById('gua1_name').innerText = data.gua1_name;
-        document.getElementById('gua2_sym').innerText = data.gua2_sym;
-        document.getElementById('gua2_name').innerText = data.gua2_name;
-        document.getElementById('probValue').innerText = data.probability + "%";
-        document.getElementById('probFill').style.width = data.probability + "%";
         
-        const list = document.getElementById('factorList');
-        list.innerHTML = "";
-        data.factors.forEach(f => {
-            const item = document.createElement('div');
-            item.className = "factor-item";
-            const tag = (isCruel && f.type==='risk') ? '<span class="cruel-tag">耗散</span>' : '';
-            item.innerHTML = `<span class="factor-icon">${f.type==='risk'?'🔻':'🔺'}</span><div class="factor-content">${tag}${f.content}</div>`;
-            list.appendChild(item);
-        });
+        if(aiData.error) throw new Error(aiData.error.message || "智核平台拒绝访问");
+        if(!aiData.choices || !aiData.choices[0]) throw new Error("API返回异常，未获取到有效节点数据");
 
-        document.getElementById('resultArea').style.display = 'block';
+        // 防弹解析器：强制抠出花括号内的内容
+        let raw = aiData.choices[0].message.content;
+        const jsonMatch = raw.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error("智核未能按标准格式返回因果矩阵");
+        
+        const data = JSON.parse(jsonMatch[0]);
+        renderResult(data);
+
     } catch (err) {
-        alert("🚨 硅基演化中断：\n" + err.message);
+        console.error(err);
+        alert(`🚨 算力崩塌 (${provider}):\n` + err.message + "\n\n建议：点击底部⚙️切换至【本地沙盒模拟】排查是否为界面错误。");
     } finally {
         document.getElementById('radarArea').style.display = 'none';
         btn.disabled = false;
+        log.innerText = "";
     }
+}
+
+function renderResult(data) {
+    document.getElementById('gua1_sym').innerText = data.gua1_sym;
+    document.getElementById('gua1_name').innerText = data.gua1_name;
+    document.getElementById('gua2_sym').innerText = data.gua2_sym;
+    document.getElementById('gua2_name').innerText = data.gua2_name;
+    
+    const gua2El = document.getElementById('gua2_sym');
+    gua2El.style.color = data.probability < 60 ? "var(--danger)" : "var(--success)";
+
+    document.getElementById('probValue').innerText = data.probability + "%";
+    const fill = document.getElementById('probFill');
+    fill.style.width = "0%";
+    setTimeout(() => { fill.style.width = data.probability + "%"; }, 100);
+    fill.style.background = data.probability < 60 ? "var(--danger)" : "var(--success)";
+    
+    const list = document.getElementById('factorList');
+    list.innerHTML = "";
+    data.factors.forEach(f => {
+        const item = document.createElement('div');
+        item.className = "factor-item";
+        const tag = (isCruel && f.type==='risk') ? '<span class="cruel-tag">熵增项</span>' : '';
+        item.innerHTML = `<span class="factor-icon">${f.type==='risk'?'🔻':(f.type==='positive'?'🔺':'🔹')}</span><div class="factor-content">${tag}${f.content}</div>`;
+        list.appendChild(item);
+    });
+
+    document.getElementById('resultArea').style.display = 'block';
 }
 </script>
 </body>
