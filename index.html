@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>万象森罗终端 V6.1 - 赛博天机版</title>
+    <title>万象森罗终端 V6.2 - 交互加固版</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     
     <style>
@@ -21,75 +21,76 @@
             color: var(--text); 
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif; 
             margin: 0; 
-            padding: 10px; 
+            padding: 15px; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             min-height: 100vh;
         }
 
-        /* 赛博背景装饰 */
+        /* 修复：背景装饰层不能遮挡点击 */
         body::before {
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-            z-index: 100;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), 
+                        linear-gradient(90deg, rgba(147, 112, 219, 0.05), rgba(0, 255, 0, 0.01));
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none; /* 关键：允许点击穿透 */
+            z-index: 1;
         }
 
-        .container { max-width: 480px; width: 100%; z-index: 10; }
+        .container { max-width: 480px; width: 100%; z-index: 100; position: relative; }
 
         .card { 
-            background: #0a0a0a; 
+            background: rgba(10, 10, 10, 0.95); 
             border: 1px solid var(--border); 
             border-radius: 24px; 
             padding: 25px; 
-            box-shadow: 0 0 30px rgba(147,112,219,0.15); 
-            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,1); 
         }
 
-        h1 { font-size: 1.3rem; color: var(--main); text-align: center; letter-spacing: 5px; margin: 0; text-transform: uppercase; }
-        .subtitle { font-size: 9px; text-align: center; color: #555; margin-bottom: 20px; letter-spacing: 3px; }
+        h1 { font-size: 1.3rem; color: var(--main); text-align: center; letter-spacing: 4px; margin: 0; }
+        .subtitle { font-size: 9px; text-align: center; color: #555; margin-bottom: 20px; letter-spacing: 2px; }
         
         input { 
             background: #111; border: 1px solid #333; color: #fff; 
             padding: 12px; border-radius: 12px; font-size: 14px; 
-            width: 100%; margin-bottom: 10px; transition: 0.3s;
+            width: 100%; margin-bottom: 12px; transition: 0.2s;
+            outline: none;
         }
-        input:focus { border-color: var(--main); outline: none; background: #161616; }
+        input:focus { border-color: var(--main); background: #161616; }
 
-        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         
         button { 
-            width: 100%; padding: 15px; background: var(--main); color: #fff; 
+            width: 100%; padding: 16px; background: var(--main); color: #fff; 
             border: none; border-radius: 12px; font-weight: bold; 
-            cursor: pointer; letter-spacing: 2px; transition: 0.3s; margin-top: 5px;
+            cursor: pointer; letter-spacing: 2px; transition: 0.2s; 
+            position: relative; z-index: 110; /* 确保在最前 */
         }
-        button:hover { filter: brightness(1.2); }
-        .detect-btn { background: #3c1e70; border: 1px solid var(--main); margin-bottom: 15px; }
+        button:active { transform: scale(0.96); filter: brightness(0.8); }
+        
+        .detect-btn { background: #2a1a4a; border: 1px solid var(--main); margin-bottom: 15px; color: var(--main); }
         
         #resultArea { 
             margin-top: 25px; display: none; 
-            background: rgba(147,112,219,0.02); 
-            padding: 20px; border-radius: 15px; border: 1px dashed #444; 
+            background: rgba(20, 20, 20, 0.8); 
+            padding: 20px; border-radius: 15px; border: 1px solid #333; 
+            animation: fadeIn 0.5s ease;
         }
 
-        .gua-display { text-align: center; margin-bottom: 20px; }
-        .gua-icon { font-size: 40px; color: var(--main); margin-bottom: 5px; }
-        .gua-name { font-size: 18px; font-weight: bold; letter-spacing: 2px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .report-section { margin-top: 15px; }
-        .section-title { 
-            font-size: 11px; color: var(--main); margin-bottom: 8px; 
-            font-weight: bold; display: flex; align-items: center;
-        }
-        .section-title::before { content: "●"; margin-right: 5px; font-size: 8px; }
-        .section-content { font-size: 13px; line-height: 1.6; color: #aaa; }
+        .gua-display { text-align: center; margin-bottom: 15px; }
+        .gua-icon { font-size: 48px; color: var(--main); margin-bottom: 5px; line-height: 1; }
+        .gua-name { font-size: 18px; font-weight: bold; letter-spacing: 2px; color: #fff; }
+
+        .report-section { margin-top: 15px; border-top: 1px solid #222; padding-top: 12px; }
+        .section-title { font-size: 11px; color: var(--main); margin-bottom: 5px; font-weight: bold; }
+        .section-content { font-size: 13px; line-height: 1.6; color: #bbb; text-align: justify; }
         
-        #exportBtn { background: #eee; color: #000; display: none; margin-top: 20px; }
+        #exportBtn { background: #fff; color: #000; display: none; margin-top: 20px; }
         .loading-text { font-size: 11px; color: var(--main); text-align: center; display: none; margin-bottom: 10px; }
     </style>
 </head>
@@ -98,20 +99,21 @@
 <div class="container">
     <div class="card" id="captureArea">
         <h1>万象森罗终端</h1>
-        <div class="subtitle">V6.1 SECURITY REINFORCED</div>
+        <div class="subtitle">V6.2 INTERFACE REPAIRED</div>
         
         <input type="text" id="target" placeholder="🔮 输入观测目标 (如: 某项实验、趋势)">
-        <div id="loadingStatus" class="loading-text">正在同步全网情报噪声...</div>
-        <button onclick="fetchData()" class="detect-btn" id="aiBtn">📡 情报源同步</button>
+        
+        <div id="loadingStatus" class="loading-text">📡 正在同步情报源噪声...</div>
+        <button onclick="fetchData()" class="detect-btn" id="aiBtn">情报源同步</button>
         
         <div class="input-grid">
-            <input type="text" id="p_val" placeholder="天时 (等待同步)">
-            <input type="text" id="e_val" placeholder="地利 (等待同步)">
-            <input type="text" id="s_val" placeholder="人和 (等待同步)">
-            <input type="text" id="t_val" placeholder="神机 (等待同步)">
+            <input type="text" id="p_val" placeholder="天时 (等待)">
+            <input type="text" id="e_val" placeholder="地利 (等待)">
+            <input type="text" id="s_val" placeholder="人和 (等待)">
+            <input type="text" id="t_val" placeholder="神机 (等待)">
         </div>
 
-        <button onclick="runInference()">启动非线性推演</button>
+        <button onclick="runInference()" id="runBtn">启动非线性推演</button>
 
         <div id="resultArea">
             <div class="gua-display">
@@ -119,15 +121,15 @@
                 <div id="resGuaName" class="gua-name"></div>
             </div>
             <div class="report-section">
-                <div class="section-title">逻辑判定</div>
+                <div class="section-title">⚖️ 逻辑判定</div>
                 <div id="resJudge" class="section-content"></div>
             </div>
             <div class="report-section">
-                <div class="section-title">因果指引</div>
+                <div class="section-title">💡 因果指引</div>
                 <div id="resAdvice" class="section-content"></div>
             </div>
         </div>
-        <button onclick="exportReport()" id="exportBtn">📸 导出推演拓片</button>
+        <button onclick="exportReport()" id="exportBtn">留存天机拓片</button>
     </div>
 </div>
 
@@ -135,27 +137,31 @@
 const TAVILY_KEY = "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"; 
 
 const wisdom = {
-    1: { name: "乾天", icon: "䷀", essence: "纯阳刚健，代表底层逻辑的剧烈扩张。", path: "向上突破" },
-    2: { name: "兑泽", icon: "䷹", essence: "悦动映射，代表信息的快速流动。", path: "价值转换" },
-    3: { name: "离火", icon: "䷝", essence: "文明附丽，代表能量的集中释放。", path: "借势升维" },
-    4: { name: "震雷", icon: "䷲", essence: "动能爆发，代表变革对旧体系的清洗。", path: "雷厉风行" },
-    5: { name: "巽风", icon: "䷸", essence: "渗透扩散，代表细微变量的结构渗透。", path: "顺势切入" },
-    6: { name: "坎水", icon: "䷜", essence: "陷落陷阱，代表推演中不可见的盲点。", path: "守恒蓄力" },
-    7: { name: "艮山", icon: "䷳", essence: "静止止步，代表当前逻辑已触碰边界。", path: "固本培元" },
-    8: { name: "坤地", icon: "䷷", essence: "承载包容，代表厚积薄发的生命力。", path: "顺应承载" }
+    1: { name: "乾天", icon: "䷀", essence: "纯阳刚健，代表底层逻辑的剧烈扩张。" },
+    2: { name: "兑泽", icon: "䷹", essence: "悦动映射，代表信息的快速流动。" },
+    3: { name: "离火", icon: "䷝", essence: "文明附丽，代表能量的集中释放。" },
+    4: { name: "震雷", icon: "䷲", essence: "动能爆发，代表变革对旧体系的清洗。" },
+    5: { name: "巽风", icon: "䷸", essence: "渗透扩散，代表细微变量的结构渗透。" },
+    6: { name: "坎水", icon: "䷜", essence: "陷落陷阱，代表推演中不可见的盲点。" },
+    7: { name: "艮山", icon: "䷳", essence: "静止止步，代表当前逻辑已触碰边界。" },
+    8: { name: "坤地", icon: "䷷", essence: "承载包容，代表厚积薄发的生命力。" }
 };
 
 async function fetchData() {
     const target = document.getElementById('target').value;
-    if(!target) return alert("请指定目标");
+    if(!target) { alert("请先指定目标"); return; }
+    
     const loader = document.getElementById('loadingStatus');
+    const btn = document.getElementById('aiBtn');
+    
     loader.style.display = 'block';
+    btn.disabled = true;
 
     try {
         const response = await fetch('https://api.tavily.com/search', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ api_key: TAVILY_KEY, query: target, search_depth: "basic", max_results: 3 })
+            body: JSON.stringify({ api_key: TAVILY_KEY, query: target, search_depth: "basic" })
         });
         const data = await response.json();
         const res = data.results || [];
@@ -164,36 +170,34 @@ async function fetchData() {
         document.getElementById('e_val').value = res[1] ? res[1].title.substring(0,10) : "格局固化";
         document.getElementById('t_val').value = res[2] ? res[2].title.substring(0,10) : "数理收敛";
         document.getElementById('s_val').value = "共识聚集";
-        alert("✨ 情报场已建立");
     } catch (err) {
-        alert("网络链路受阻，已启用本地缺省值");
-        document.getElementById('p_val').value = "时空偏转";
-        document.getElementById('e_val').value = "地壳震荡";
+        document.getElementById('p_val').value = "本地观测";
+        document.getElementById('e_val').value = "环境底噪";
     } finally {
         loader.style.display = 'none';
+        btn.disabled = false;
     }
-}
-
-function hashString(s) {
-    let h = 0;
-    for(let i=0; i<s.length; i++) h = (h << 5) - h + s.charCodeAt(i);
-    return Math.abs(h);
 }
 
 function runInference() {
     const target = document.getElementById('target').value;
-    if(!target) return alert("输入目标以拨动因果");
+    if(!target) { alert("请输入观测目标"); return; }
 
-    const h = hashString(target + document.getElementById('p_val').value);
+    // 生成伪随机哈希
+    let h = 0;
+    const str = target + new Date().getDate();
+    for(let i=0; i<str.length; i++) h = (h << 5) - h + str.charCodeAt(i);
+    h = Math.abs(h);
+
     const up = (h % 8) + 1;
     const low = ((h >> 3) % 8) + 1;
 
     document.getElementById('resGuaIcon').innerText = wisdom[up].icon;
     document.getElementById('resGuaName').innerText = `${wisdom[up].name} · ${wisdom[low].name}`;
     
-    document.getElementById('resJudge').innerText = `针对目标「${target}」，当前天时入「${wisdom[up].name}」格。${wisdom[up].essence} 现实气场受到「${document.getElementById('e_val').value}」的深刻影响，暗示系统正处于因果坍缩的关键期。`;
+    document.getElementById('resJudge').innerText = `针对目标「${target}」，当前因果链入「${wisdom[up].name}」格。${wisdom[up].essence} 结合外界变量「${document.getElementById('p_val').value || '平衡'}」，显示系统正处于逻辑重组期。`;
     
-    document.getElementById('resAdvice').innerText = `【上策】：执行「${wisdom[up].path}」策略。利用「${document.getElementById('t_val').value}」作为扰动杠杆，在「${wisdom[low].name}」的阴影中寻找结构性机会。`;
+    document.getElementById('resAdvice').innerText = `建议顺应「${wisdom[low].name}」之势，利用「${document.getElementById('t_val').value || '数理'}」作为平衡点，在变局中锁定核心价值。`;
 
     document.getElementById('resultArea').style.display = 'block';
     document.getElementById('exportBtn').style.display = 'block';
@@ -201,8 +205,8 @@ function runInference() {
 
 function exportReport() {
     const area = document.getElementById('captureArea');
-    if(typeof html2canvas === 'undefined') return alert("截图组件加载中，请稍后");
-    html2canvas(area, { backgroundColor: '#050505' }).then(canvas => {
+    if(typeof html2canvas === 'undefined') { alert("截图插件加载中"); return; }
+    html2canvas(area, { backgroundColor: '#050505', scale: 2 }).then(canvas => {
         const link = document.createElement('a');
         link.href = canvas.toDataURL();
         link.download = `万象拓片-${Date.now()}.png`;
