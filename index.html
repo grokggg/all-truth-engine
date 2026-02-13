@@ -1,97 +1,1204 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Truth Engine</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="app.js" defer></script>
+    <title>V17.0 NOOSPHERE | 全息知性网 - All Truth Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --main: #00e5ff;
+            --bg: #030305;
+            --card: #0a0b10;
+            --text: #a0a0b0;
+            --gold: #ffd700;
+            --success: #00ff00;
+            --error: #ff4444;
+            --warning: #ffaa00;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .node-container {
+            width: 100%;
+            max-width: 750px;
+            background: var(--card);
+            border: 2px solid #1a1c25;
+            padding: 40px;
+            box-shadow: 0 0 50px rgba(0, 225, 255, 0.1), inset 0 0 50px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            position: relative;
+            animation: fadeInContainer 0.8s ease;
+        }
+
+        @keyframes fadeInContainer {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .node-container::before {
+            content: "ARCHITECTURE: NOOSPHERE V17.0";
+            font-size: 9px;
+            color: #333;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            letter-spacing: 2px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #1a1c25;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: var(--main);
+            text-shadow: 0 0 20px var(--main);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+
+        .header p {
+            font-size: 12px;
+            color: var(--gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .search-bay {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 15px;
+        }
+
+        .search-label {
+            font-size: 10px;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        input[type="text"] {
+            background: transparent;
+            border: none;
+            color: var(--main);
+            font-size: 18px;
+            width: 100%;
+            outline: none;
+            letter-spacing: 2px;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-bottom-color: var(--main);
+            box-shadow: 0 0 10px rgba(0, 225, 255, 0.3);
+        }
+
+        input[type="text"]::placeholder {
+            color: #555;
+        }
+
+        .core-btn {
+            background: var(--main);
+            color: #000;
+            border: none;
+            padding: 15px 20px;
+            width: 100%;
+            font-weight: 800;
+            cursor: pointer;
+            letter-spacing: 3px;
+            transition: all 0.3s;
+            font-size: 14px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .core-btn:hover:not(:disabled) {
+            background: #fff;
+            box-shadow: 0 0 20px var(--main);
+            transform: translateY(-2px);
+        }
+
+        .core-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .core-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        #log-stream {
+            font-size: 12px;
+            color: #666;
+            margin: 15px 0;
+            min-height: 20px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            background: rgba(0, 225, 255, 0.05);
+            border-radius: 4px;
+            border-left: 3px solid var(--main);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: #222;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--main), var(--gold));
+            width: 0%;
+            animation: progress 0.3s ease;
+        }
+
+        @keyframes progress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        #display-gate {
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hex-info-panel {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #1a1c25;
+        }
+
+        .gua-visual {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 8px;
+            width: 60px;
+            flex-shrink: 0;
+        }
+
+        .y-line {
+            height: 6px;
+            background: var(--main);
+            border-radius: 3px;
+            box-shadow: 0 0 10px var(--main);
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        .i-line {
+            height: 6px;
+            display: flex;
+            justify-content: space-between;
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        .i-line::before,
+        .i-line::after {
+            content: "";
+            width: 42%;
+            height: 100%;
+            background: #3a3d4d;
+            border-radius: 3px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .meta-text h2 {
+            margin: 0;
+            font-size: 40px;
+            color: #fff;
+            text-shadow: 0 0 15px var(--main);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .meta-text p {
+            margin: 0;
+        }
+
+        .meta-text span {
+            font-size: 11px;
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .confidence-indicator {
+            margin-top: 10px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 4px;
+            background: #222;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--main), var(--gold));
+            border-radius: 2px;
+        }
+
+        .insight-card {
+            margin-top: 25px;
+            border-left: 3px solid var(--main);
+            padding-left: 20px;
+            animation: cardFadeIn 0.6s ease;
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .insight-card h3 {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .insight-card p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #c0c0d0;
+            margin: 0;
+        }
+
+        .key-data {
+            color: var(--main);
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 225, 255, 0.3);
+        }
+
+        .error-message {
+            background: rgba(255, 68, 68, 0.1);
+            border-left: 3px solid var(--error);
+            color: #ff8888;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .stats-panel {
+            background: rgba(255, 215, 0, 0.05);
+            border-left: 3px solid var(--gold);
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .history-section {
+            margin-top: 30px;
+            border-top: 1px solid #1a1c25;
+            padding-top: 20px;
+        }
+
+        .history-title {
+            font-size: 10px;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .history-item {
+            background: rgba(0, 225, 255, 0.05);
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 2px solid transparent;
+        }
+
+        .history-item:hover {
+            background: rgba(0, 225, 255, 0.1);
+            border-left-color: var(--main);
+            transform: translateX(5px);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border: 2px solid var(--main);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .node-container {
+                padding: 20px;
+            }
+
+            .hex-info-panel {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .meta-text h2 {
+                font-size: 28px;
+            }
+
+            input[type="text"] {
+                font-size: 16px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .gua-visual {
+                width: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .node-container {
+                padding: 15px;
+                border-radius: 4px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .meta-text h2 {
+                font-size: 24px;
+            }
+
+            .insight-card p {
+                font-size: 13px;
+            }
+
+            .core-btn {
+                padding: 12px;
+                font-size: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to the All Truth Engine</h1>
-    </header>
-    <main>
-        <div id="loader" class="loader hidden">Loading...</div>
-        <div id="content" class="content"></div>
-        <div id="error" class="error hidden"></div>
-    </main>
-    <footer>
-        <p>&copy; 2026 Grokggg All Rights Reserved</p>
-    </footer>
-</body>
-</html>
+
+<div class="node-container">
+    <div class="header">
+        <h1>⬢ NOOSPHERE V17.0</h1>
+        <p>全息知性网 | All Truth Engine</p>
+    </div>
+
+    <div class="error-message" id="error-message"></div>
+
+    <div class="search-bay">
+        <label class="search-label">INITIATE QUERY</label>
+        <input type="text" id="target" placeholder="Enter your question or topic..." autocomplete="off">
+    </div>
+
+    <button class="core-btn" id="analyze-btn">RUN NOOSPHERE ENGINE</button>
+
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <div id="log-stream">Ready to analyze</div>
+
+    <div id="display-gate">
+        <div class="hex-info-panel">
+            <div id="gua-draw" class="gua-visual"></div>
+            <div class="meta-text">
+                <h2 id="gua-name">--</h2>
+                <p><span id="gua-meaning">--</span></p>
+                <div class="confidence-indicator">
+                    <div>Confidence Level:</div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidence-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="insight-card">
+            <h3>Entropy & Phase // 物理相变</h3>
+            <p id="p-phys"></p>
+        </div>
+
+        <div class="insight-card">
+            <h3>Strategic Game // 博弈构效</h3>
+            <p id="p-game"></p>
+        </div>
+
+        <div class="insight-card">
+            <h3>Final Axiom // 终极公理</h3>
+            <p id="p-final" style="color: #fff; font-weight: bold;"></p>
+        </div>
+
+        <div class="stats-panel">
+            <div>Content Length: <span id="stat-content-length">0</span> chars</div>
+            <div>Domain Classification: <span id="stat-domain">GENERAL</span></div>
+            <div>Analysis Time: <span id="stat-time">0</span>ms</div>
+        </div>
+
+        <div class="history-section">
+            <div class="history-title">Recent Queries</div>
+            <div id="history-container"></div>
+        </div>
+    </div>
+</div>
 
 <script>
-// NoosphereState class managing the state of the application
-class NoosphereState {
-    constructor() {
-        this.states = {};
-    }
-    setState(key, value) {
-        this.states[key] = value;
-    }
-    getState(key) {
-        return this.states[key];
-    }
-}
+    // ============================================================
+    // STATE MANAGEMENT SYSTEM
+    // ============================================================
 
-// APIClient class with caching and request handling features
-class APIClient {
-    constructor() {
-        this.cache = {};
-        this.retryCount = 0;
-    }
-    async fetchData(url) {
-        if (this.cache[url]) {
-            return this.cache[url];
-        }
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Network response was not ok');
-            const data = await response.json();
-            this.cache[url] = data;
-            return data;
-        } catch (error) {
-            this.handleRetry(url);
-        }
-    }
-    handleRetry(url) {
-        this.retryCount++;
-        if (this.retryCount < 3) {
-            setTimeout(() => this.fetchData(url), 1000);
-        } else {
-            console.error('Failed to fetch data after multiple retries');
-        }
-    }
-}
+    class NoosphereState {
+        constructor() {
+            this.state = {
+                query: '',
+                loading: false,
+                results: null,
+                domain: 'GENERAL',
+                gua: null,
+                insights: {},
+                history: this.loadHistory(),
+                errors: null,
+                timestamp: null,
+                searchTime: 0
+            };
 
-// UIController managing UI updates and interactions
-class UIController {
-    constructor() {
-        this.state = new NoosphereState();
-        this.apiClient = new APIClient();
-    }
-    async loadContent() {
-        const contentElement = document.getElementById('content');
-        const loader = document.getElementById('loader');
-        loader.classList.remove('hidden');
-        try {
-            const data = await this.apiClient.fetchData('/api/data');
-            contentElement.innerHTML = JSON.stringify(data);
-        } catch (error) {
-            this.showError(error.message);
-        } finally {
-            loader.classList.add('hidden');
+            this.listeners = new Set();
+            this.middlewares = [];
+        }
+
+        use(middleware) {
+            this.middlewares.push(middleware);
+            return this;
+        }
+
+        subscribe(listener) {
+            this.listeners.add(listener);
+            return () => this.listeners.delete(listener);
+        }
+
+        async dispatch(action) {
+            try {
+                for (const middleware of this.middlewares) {
+                    await middleware({ action, state: this.state });
+                }
+
+                const newState = await this.reduce(action);
+                this.state = Object.freeze({
+                    ...this.state,
+                    ...newState,
+                    timestamp: Date.now()
+                });
+
+                this.listeners.forEach(listener => listener(this.state));
+
+            } catch (error) {
+                console.error('Dispatch error:', error);
+                this.state.errors = error.message;
+                this.listeners.forEach(listener => listener(this.state));
+            }
+        }
+
+        async reduce(action) {
+            switch (action.type) {
+                case 'SEARCH_START':
+                    return { loading: true, errors: null, searchTime: Date.now() };
+
+                case 'SEARCH_SUCCESS': {
+                    const startTime = this.state.searchTime;
+                    const endTime = Date.now();
+                    const searchTime = endTime - startTime;
+
+                    const domainResult = this.classifyDomain(action.payload.content);
+                    const guaResult = this.generateGua(domainResult, action.payload.content);
+                    const insightsResult = this.generateInsights(
+                        domainResult,
+                        action.payload.query,
+                        guaResult
+                    );
+
+                    const newHistory = [
+                        { query: action.payload.query, timestamp: Date.now(), domain: domainResult },
+                        ...this.state.history.slice(0, 49)
+                    ];
+
+                    this.saveHistory(newHistory);
+
+                    return {
+                        loading: false,
+                        results: action.payload,
+                        domain: domainResult,
+                        gua: guaResult,
+                        insights: insightsResult,
+                        query: action.payload.query,
+                        history: newHistory,
+                        searchTime: searchTime
+                    };
+                }
+
+                case 'SEARCH_FAILURE':
+                    return { loading: false, errors: action.payload.error };
+
+                default:
+                    return {};
+            }
+        }
+
+        // ============================================================
+        // DOMAIN CLASSIFICATION ALGORITHM
+        // ============================================================
+
+        classifyDomain(content) {
+            const weights = {
+                CRIMINAL: this.scoreKeywords(content, [
+                    { words: ['案', '凶', '死', '罪', '刑', '杀', '抛尸', '法医', '逮捕', '审判', '监狱', '犯罪'], weight: 2 },
+                    { words: ['杀害', '谋杀', '犯人', '嫌疑人', '刑事'], weight: 1.5 }
+                ]),
+                INDUSTRIAL: this.scoreKeywords(content, [
+                    { words: ['制造', '热管理', '研发', '技术', '供应', '液冷', '储能', '交付', '产能', '工艺', '芯片', '电池'], weight: 2 },
+                    { words: ['生产', '工业', '制造业', '自动化', '设备'], weight: 1.5 }
+                ]),
+                FINANCE: this.scoreKeywords(content, [
+                    { words: ['股', '跌', '涨', '资金', '投资', '财报', '估值', '融资', '破产', '收购'], weight: 2 },
+                    { words: ['股市', '基金', '债券', '期货', '交易'], weight: 1.5 }
+                ]),
+                TECHNOLOGY: this.scoreKeywords(content, [
+                    { words: ['算法', '代码', '编程', '软件', '硬件', 'AI', '机器学习', '数据', '云', '网络'], weight: 2 },
+                    { words: ['开发', '系统', '架构', '框架', '服务'], weight: 1.5 }
+                ]),
+                SOCIAL: this.scoreKeywords(content, [
+                    { words: ['社会', '人口', '文化', '教育', '政治', '历史', '民众', '舆论'], weight: 2 },
+                    { words: ['群体', '社群', '传播', '意识形态'], weight: 1.5 }
+                ])
+            };
+
+            const sorted = Object.entries(weights)
+                .sort(([, a], [, b]) => b - a);
+
+            return sorted[0][1] > 3 ? sorted[0][0] : 'GENERAL';
+        }
+
+        scoreKeywords(content, groups) {
+            return groups.reduce((score, group) => {
+                const groupScore = group.words.reduce((sum, word) => {
+                    const count = (content.match(new RegExp(word, 'g')) || []).length;
+                    return sum + (count * group.weight);
+                }, 0);
+                return score + groupScore;
+            }, 0);
+        }
+
+        // ============================================================
+        // 64 HEXAGRAMS GENERATION LOGIC
+        // ============================================================
+
+        generateGua(domain, content) {
+            const lowerMap = {
+                CRIMINAL: { code: '010', symbol: '☷', name: '坤' },
+                INDUSTRIAL: { code: '100', symbol: '☳', name: '震' },
+                FINANCE: { code: '110', symbol: '☲', name: '离' },
+                TECHNOLOGY: { code: '101', symbol: '☶', name: '乾' },
+                SOCIAL: { code: '011', symbol: '☴', name: '巽' },
+                GENERAL: { code: '000', symbol: '☵', name: '坎' }
+            };
+
+            const contentScore = Math.min(content.length / 100, 10);
+            const upperMap = {
+                HIGH: { code: '101', symbol: '☶', level: 'HIGH', desc: '高热度' },
+                MEDIUM: { code: '011', symbol: '☵', level: 'MEDIUM', desc: '中热度' },
+                LOW: { code: '001', symbol: '☱', level: 'LOW', desc: '低热度' }
+            };
+
+            const temperatureLevel = contentScore > 6 ? 'HIGH' : contentScore > 3 ? 'MEDIUM' : 'LOW';
+            const lower = lowerMap[domain];
+            const upper = upperMap[temperatureLevel];
+            const bin = upper.code + lower.code;
+
+            const guaLibrary = {
+                '101010': { cn: '既济', en: 'COMPLETION', desc: '水火既济，秩序已成' },
+                '001010': { cn: '蹇卦', en: 'DIFFICULTY', desc: '山水蹇，前路堵截' },
+                '101100': { cn: '噬嗑', en: 'JUDGEMENT', desc: '火雷噬嗑，严厉制裁' },
+                '001100': { cn: '颐卦', en: 'NOURISHMENT', desc: '山雷颐，滋养生态' },
+                '101110': { cn: '睽卦', en: 'DIVERGENCE', desc: '火泽睽，背道而驰' },
+                '110101': { cn: '小过', en: 'MINOR', desc: '雷山小过，微调纠正' },
+                '011011': { cn: '中孚', en: 'TRUST', desc: '风泽中孚，信任基础' },
+                '111000': { cn: '泰卦', en: 'PEACE', desc: '天地泰，通泰之象' },
+                '000111': { cn: '否卦', en: 'STAGNATION', desc: '天地否，阻塞之象' },
+                '110110': { cn: '离卦', en: 'CLINGING', desc: '火火离，依附之象' },
+                '101101': { cn: '乾卦', en: 'CREATIVE', desc: '天天乾，创意之源' },
+                '010101': { cn: '坤卦', en: 'RECEPTIVE', desc: '地地坤，承载万物' }
+            };
+
+            const gua = guaLibrary[bin] || {
+                cn: '变易',
+                en: 'EVOLVING',
+                desc: '系统处于变化中，未来尚未确定'
+            };
+
+            const confidence = Math.min(0.5 + contentScore * 0.05, 0.95);
+
+            return {
+                binary: bin,
+                upper: { code: upper.code, symbol: upper.symbol, level: temperatureLevel },
+                lower: { code: lower.code, symbol: lower.symbol, domain },
+                name: gua.cn,
+                meaning: gua.en,
+                description: gua.desc,
+                confidence: confidence
+            };
+        }
+
+        // ============================================================
+        // INSIGHTS GENERATION
+        // ============================================================
+
+        generateInsights(domain, query, gua) {
+            const escapedQuery = this.escapeHtml(query);
+
+            const templates = {
+                CRIMINAL: {
+                    physics: {
+                        title: 'Entropy & Phase // 熵的临界态',
+                        content: `系统进入<span class="key-data">「${gua.confidence > 0.8 ? '高熵冷寂' : '中熵扰动'}态」</span>。因果链条在起点被锁定，信息流向受阻。查询「${escapedQuery}」触发的认知畸变显示系统处于临界失序状态。${gua.confidence > 0.8 ? '■ 置信度: 极高 - 这是明确的信号' : '■ 置信度: 中等 - 需要更多数据验证'}`
+                    },
+                    game: {
+                        title: 'Strategic Game // 单向遮蔽博弈',
+                        content: `这场博弈中，信息高度不对称。单方的隐匿能力压倒理性推演。在「${escapedQuery}」的语境中，所有玩家都陷入概率云的无限弥散。<span class="key-data">关键变量</span>：主体身份的不确定性 / 行动的隐蔽性 / 观测者的盲点`
+                    },
+                    axiom: `【终极公理】真相已被时间熵耗散。观测方式决定了可达的真相边界。`
+                },
+                INDUSTRIAL: {
+                    physics: {
+                        title: 'Entropy & Phase // 耗散结构',
+                        content: `系统处于<span class="key-data">「负熵聚集态」</span>。技术投入构成能量源，抵抗市场无序。在「${escapedQuery}」的生态中，秩序通过物理约束和优化完成二次重构。◆ 能量流向: 研发 → 产能 → 市场 ◆ 熵流方向: 成本压力 ↔ 技术突破`
+                    },
+                    game: {
+                        title: 'Strategic Game // 供应链协同',
+                        content: `核心矛盾：下游成本压力 vs 上游技术领先。当前处于<span class="key-data">动态帕累托改进期</span>。关键玩家间存在半协作、半竞争的局面。市场化程度越高，博弈空间越大。`
+                    },
+                    axiom: `【终极公理】效能是生存的唯一度量。技术奇点将重划地缘政治和产业版图。`
+                },
+                TECHNOLOGY: {
+                    physics: {
+                        title: 'Entropy & Phase // 信息热力学',
+                        content: `系统处于<span class="key-data">「认知加速态」</span>。数据流动速度超过人类处理能力，形成信息过载。在「${escapedQuery}」的技术栈中，复杂度呈指数增长。◆ 信息熵: 快速上升 ◆ 可理解性: 快速下降 ◆ 系统脆弱性: 深度耦合`
+                    },
+                    game: {
+                        title: 'Strategic Game // 技术竞争格局',
+                        content: `开源与闭源的博弈。创新速度 vs 系统稳定性。在「${escapedQuery}」领域，先发者优势逐渐消退，生态壁垒成为关键。<span class="key-data">赢家通吃</span>的局面正在逆转。`
+                    },
+                    axiom: `【终极公理】技术是放大器，放大人性的光明与黑暗。`
+                },
+                SOCIAL: {
+                    physics: {
+                        title: 'Entropy & Phase // 集体热力学',
+                        content: `系统处于<span class="key-data">「舆论涌动态」</span>。大规模信息流动形成集群效应。在「${escapedQuery}」的社会叙事中，共识与冲突并存。◆ 意见极化: 加速分裂 ◆ 话语权: 再度分配 ◆ 社会张力: 持续上升`
+                    },
+                    game: {
+                        title: 'Strategic Game // 话语权博弈',
+                        content: `多中心化时代的声音竞争。传统权力结构与新兴力量的对抗。在「${escapedQuery}」的社会场景中，叙事权的重新分配正在进行。谁控制了故事，就控制了未来。`
+                    },
+                    axiom: `【终极公理】社会是自适应复杂系统，没有单线的因果，只有反馈与涌现。`
+                },
+                FINANCE: {
+                    physics: {
+                        title: 'Entropy & Phase // 流动性危机',
+                        content: `系统处于<span class="key-data">「流动不确定态」</span>。资本的涌入与撤离构成主要波动。在「${escapedQuery}」的金融生态中，价值发现机制失效。◆ 价值锚点: 悬浮不定 ◆ 市场情绪: 高度敏感 ◆ 系统风险: 不可预测`
+                    },
+                    game: {
+                        title: 'Strategic Game // 零和与非零和',
+                        content: `市场情绪的反馈回路快于基本面演化。在「${escapedQuery}」的交易场景中，短期处于博弈过热区。<span class="key-data">零和博弈 ↔ 动态对冲</span>。技术面与基本面的背离在加大。`
+                    },
+                    axiom: `【终极公理】价值是共识的幻象，在波动中寻找不变的因果常量。`
+                },
+                GENERAL: {
+                    physics: {
+                        title: 'Entropy & Phase // 系统演化',
+                        content: `系统处于<span class="key-data">「演化探索态」</span>。在「${escapedQuery}」的语境中，关键信息仍在整合中。多个维度的数据交织，形成复杂的因果网络。◆ 信息密度: 中等 ◆ 确定性: 有限 ◆ 发展方向: 多元`
+                    },
+                    game: {
+                        title: 'Strategic Game // 多方互动',
+                        content: `在「${escapedQuery}」的现象中，各方参与者的目标与利益呈多元分布。非零和博弈特征明显。合作与竞争的边界模糊，动态变化。`
+                    },
+                    axiom: `【终极公理】复杂系统无简单答案，唯有在对立中把握动态的平衡。`
+                }
+            };
+
+            const template = templates[domain] || templates.GENERAL;
+
+            return {
+                physics: {
+                    title: template.physics.title,
+                    content: template.physics.content
+                },
+                game: {
+                    title: template.game.title,
+                    content: template.game.content
+                },
+                axiom: {
+                    content: template.axiom
+                }
+            };
+        }
+
+        // ============================================================
+        // UTILITY FUNCTIONS
+        // ============================================================
+
+        escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return String(text).replace(/[&<>"']/g, m => map[m]);
+        }
+
+        loadHistory() {
+            try {
+                const saved = localStorage.getItem('noosphere_history');
+                return saved ? JSON.parse(saved) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        saveHistory(history) {
+            try {
+                localStorage.setItem('noosphere_history', JSON.stringify(history));
+            } catch (e) {
+                console.warn('Failed to save history:', e);
+            }
         }
     }
-    showError(message) {
-        const errorElement = document.getElementById('error');
-        errorElement.innerText = message;
-        errorElement.classList.remove('hidden');
-    }
-}
 
-const uiController = new UIController();
-uiController.loadContent();
+    // ============================================================
+    // API CLIENT WITH CACHING & RETRY LOGIC
+    // ============================================================
+
+    class APIClient {
+        constructor(config = {}) {
+            this.baseURL = config.proxyEndpoint || 'https://api.tavily.com';
+            this.timeout = config.timeout || 8000;
+            this.retryCount = config.retryCount || 3;
+            this.cache = new Map();
+            this.requestQueue = [];
+        }
+
+        async search(query, options = {}) {
+            const sanitized = this.sanitizeQuery(query);
+            if (!sanitized) {
+                throw new Error('Invalid query: input cannot be empty or contains invalid characters');
+            }
+
+            const cacheKey = `search:${sanitized}`;
+            const cached = this.cache.get(cacheKey);
+            if (cached && !options.forceRefresh) {
+                return cached;
+            }
+
+            return this.fetchWithRetry(sanitized, cacheKey, 0);
+        }
+
+        async fetchWithRetry(query, cacheKey, attemptCount) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+                const response = await fetch(this.baseURL + '/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Request-ID': this.generateRequestId()
+                    },
+                    body: JSON.stringify({
+                        api_key: 'tvly-dev-' + btoa(Math.random().toString()).slice(0, 20),
+                        query: query,
+                        search_depth: 'basic'
+                    }),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    if (attemptCount < this.retryCount) {
+                        const delay = Math.pow(2, attemptCount) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return this.fetchWithRetry(query, cacheKey, attemptCount + 1);
+                    }
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                this.cache.set(cacheKey, data);
+                return data;
+
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    if (attemptCount < this.retryCount) {
+                        const delay = Math.pow(2, attemptCount) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return this.fetchWithRetry(query, cacheKey, attemptCount + 1);
+                    }
+                    throw new Error('Request timeout - please try again');
+                }
+                throw error;
+            }
+        }
+
+        sanitizeQuery(query) {
+            return String(query)
+                .trim()
+                .replace(/[<>&"']/g, c => ({
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '&': '&amp;',
+                    '"': '&quot;',
+                    "'": '&#x27;'
+                }[c]))
+                .slice(0, 500);
+        }
+
+        generateRequestId() {
+            return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        }
+
+        clearCache() {
+            this.cache.clear();
+        }
+    }
+
+    // ============================================================
+    // UI CONTROLLER
+    // ============================================================
+
+    class UIController {
+        constructor(state, apiClient) {
+            this.state = state;
+            this.apiClient = apiClient;
+            this.elements = this.cacheElements();
+            this.setupEventListeners();
+            this.setupStateSubscriptions();
+        }
+
+        cacheElements() {
+            return {
+                input: document.getElementById('target'),
+                btn: document.getElementById('analyze-btn'),
+                logStream: document.getElementById('log-stream'),
+                displayGate: document.getElementById('display-gate'),
+                guaDraw: document.getElementById('gua-draw'),
+                guaName: document.getElementById('gua-name'),
+                guaMeaning: document.getElementById('gua-meaning'),
+                pPhys: document.getElementById('p-phys'),
+                pGame: document.getElementById('p-game'),
+                pFinal: document.getElementById('p-final'),
+                errorMessage: document.getElementById('error-message'),
+                progressFill: document.getElementById('progress-fill'),
+                confidenceFill: document.getElementById('confidence-fill'),
+                historyContainer: document.getElementById('history-container'),
+                statContentLength: document.getElementById('stat-content-length'),
+                statDomain: document.getElementById('stat-domain'),
+                statTime: document.getElementById('stat-time')
+            };
+        }
+
+        setupEventListeners() {
+            this.elements.input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.handleSearch();
+            });
+
+            this.elements.btn.addEventListener('click', () => this.handleSearch());
+
+            // 历史记录点击
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('history-item')) {
+                    const query = e.target.textContent.split(' - ')[0];
+                    this.elements.input.value = query;
+                    this.handleSearch();
+                }
+            });
+        }
+
+        setupStateSubscriptions() {
+            this.state.subscribe((newState) => {
+                this.render(newState);
+            });
+        }
+
+        async handleSearch() {
+            const query = this.elements.input.value.trim();
+            if (!query) {
+                this.showError('Please enter a search term');
+                return;
+            }
+
+            this.elements.btn.disabled = true;
+            this.updateLoadingUI(true);
+
+            await this.state.dispatch({ type: 'SEARCH_START' });
+
+            try {
+                await this.updateLog('Accessing Datasphere...');
+                await this.sleep(400);
+
+                const response = await this.apiClient.search(query);
+
+                if (!response.results || response.results.length === 0) {
+                    throw new Error('No results found for your query');
+                }
+
+                const content = response.results
+                    .map(r => (r.content || '') + ' ' + (r.title || ''))
+                    .join(' ')
+                    .toLowerCase();
+
+                await this.updateLog('Calculating Vector Divergence...');
+                await this.sleep(400);
+
+                await this.state.dispatch({
+                    type: 'SEARCH_SUCCESS',
+                    payload: { query, content }
+                });
+
+            } catch (error) {
+                this.showError(error.message);
+                await this.state.dispatch({
+                    type: 'SEARCH_FAILURE',
+                    payload: { error: error.message }
+                });
+            } finally {
+                this.elements.btn.disabled = false;
+                this.updateLoadingUI(false);
+            }
+        }
+
+        render(state) {
+            this.updateLoadingUI(state.loading);
+
+            if (state.errors) {
+                this.showError(state.errors);
+                return;
+            }
+
+            if (state.gua) {
+                this.renderGua(state.gua);
+                this.renderInsights(state.insights);
+                this.renderStats(state);
+                this.renderHistory(state.history);
+                this.revealResults();
+            }
+        }
+
+        async updateLog(message) {
+            this.elements.logStream.innerHTML = `<span class="loading-spinner"></span> ${message}`;
+            this.updateProgress(50);
+        }
+
+        updateProgress(percent) {
+            this.elements.progressFill.style.width = percent + '%';
+        }
+
+        renderGua(gua) {
+            this.elements.guaDraw.innerHTML = '';
+
+            const lines = gua.binary.split('');
+            lines.reverse().forEach((bit, index) => {
+                const div = document.createElement('div');
+                div.className = bit === '1' ? 'y-line' : 'i-line';
+                div.style.animationDelay = `${index * 100}ms`;
+                this.elements.guaDraw.appendChild(div);
+            });
+
+            this.elements.guaName.textContent = gua.name;
+            this.elements.guaMeaning.textContent = `${gua.meaning} / ${gua.description}`;
+            this.elements.confidenceFill.style.width = (gua.confidence * 100) + '%';
+        }
+
+        renderInsights(insights) {
+            this.elements.pPhys.innerHTML = `<strong>${insights.physics.title}</strong><br><br>${insights.physics.content}`;
+            this.elements.pGame.innerHTML = `<strong>${insights.game.title}</strong><br><br>${insights.game.content}`;
+            this.elements.pFinal.textContent = insights.axiom.content;
+        }
+
+        renderStats(state) {
+            this.elements.statContentLength.textContent = state.results?.content?.length || 0;
+            this.elements.statDomain.textContent = state.domain;
+            this.elements.statTime.textContent = state.searchTime;
+        }
+
+        renderHistory(history) {
+            this.elements.historyContainer.innerHTML = history.slice(0, 10).map(item => {
+                const time = new Date(item.timestamp).toLocaleTimeString();
+                return `<div class="history-item">${this.state.escapeHtml(item.query)} - ${item.domain} (${time})</div>`;
+            }).join('');
+        }
+
+        revealResults() {
+            this.elements.displayGate.style.display = 'block';
+            this.updateLog('Analysis Complete');
+            this.updateProgress(100);
+            setTimeout(() => this.updateProgress(0), 2000);
+        }
+
+        updateLoadingUI(loading) {
+            if (loading) {
+                this.elements.logStream.innerHTML = '<span class="loading-spinner"></span> Processing...';
+            } else {
+                this.elements.logStream.innerHTML = 'Ready to analyze';
+            }
+        }
+
+        showError(message) {
+            this.elements.errorMessage.textContent = message;
+            this.elements.errorMessage.classList.add('show');
+            setTimeout(() => {
+                this.elements.errorMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    }
+
+    // ============================================================
+    // APPLICATION INITIALIZATION
+    // ============================================================
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const state = new NoosphereState();
+        const apiClient = new APIClient();
+        const uiController = new UIController(state, apiClient);
+
+        // 中间件：日志记录
+        state.use(async ({ action, state: currentState }) => {
+            console.log('[Action]', action.type, {
+                query: currentState.query,
+                domain: currentState.domain
+            });
+        });
+
+        // 中间件：性能监测
+        state.use(async ({ action }) => {
+            if (action.type === 'SEARCH_SUCCESS') {
+                console.log('[Performance] Search completed');
+            }
+        });
+
+        // 全局错误处理
+        window.addEventListener('error', (event) => {
+            console.error('[Global Error]', event.error);
+            uiController.showError('An unexpected error occurred');
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('[Unhandled Rejection]', event.reason);
+            uiController.showError('An unexpected error occurred');
+        });
+
+        console.log('✓ Noosphere V17.0 initialized successfully');
+    });
+
 </script>
+
+</body>
+</html>
