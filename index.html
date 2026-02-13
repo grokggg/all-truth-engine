@@ -639,10 +639,6 @@
             }
         }
 
-        // ============================================================
-        // DOMAIN CLASSIFICATION ALGORITHM
-        // ============================================================
-
         classifyDomain(content) {
             const weights = {
                 CRIMINAL: this.scoreKeywords(content, [
@@ -682,10 +678,6 @@
                 return score + groupScore;
             }, 0);
         }
-
-        // ============================================================
-        // 64 HEXAGRAMS GENERATION LOGIC
-        // ============================================================
 
         generateGua(domain, content) {
             const lowerMap = {
@@ -743,10 +735,6 @@
             };
         }
 
-        // ============================================================
-        // INSIGHTS GENERATION
-        // ============================================================
-
         generateInsights(domain, query, gua) {
             const escapedQuery = this.escapeHtml(query);
 
@@ -769,7 +757,7 @@
                     },
                     game: {
                         title: 'Strategic Game // 供应链协同',
-                        content: `核心矛盾：下游成本压力 vs 上游技术领先。当前处于<span class="key-data">动态帕累托改进期</span>。关键玩家间存在半协作、半竞争的局面。市场化程度越高，博弈空间越大。`
+                        content: `核心矛盾：下游成本压力 vs 上游技术领先. 当前处于<span class="key-data">动态帕累托改进期</span>。关键玩家间存在半协作、半竞争的局面。市场化程度越高，博弈空间越大。`
                     },
                     axiom: `【终极公理】效能是生存的唯一度量。技术奇点将重划地缘政治和产业版图。`
                 },
@@ -836,10 +824,6 @@
             };
         }
 
-        // ============================================================
-        // UTILITY FUNCTIONS
-        // ============================================================
-
         escapeHtml(text) {
             const map = {
                 '&': '&amp;',
@@ -875,17 +859,16 @@
 
     class APIClient {
         constructor(config = {}) {
-            this.baseURL = config.proxyEndpoint || 'https://api.tavily.com';
+            this.baseURL = 'https://api.tavily.com';
             this.timeout = config.timeout || 8000;
             this.retryCount = config.retryCount || 3;
             this.cache = new Map();
-            this.requestQueue = [];
         }
 
         async search(query, options = {}) {
             const sanitized = this.sanitizeQuery(query);
             if (!sanitized) {
-                throw new Error('Invalid query: input cannot be empty or contains invalid characters');
+                throw new Error('Invalid query: input cannot be empty');
             }
 
             const cacheKey = `search:${sanitized}`;
@@ -902,14 +885,16 @@
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
+                // ============================================================
+                // 🔐 PHYSICAL API KEY INJECTION
+                // ============================================================
                 const response = await fetch(this.baseURL + '/search', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-Request-ID': this.generateRequestId()
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        api_key: 'tvly-dev-' + btoa(Math.random().toString()).slice(0, 20),
+                        api_key: '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',
                         query: query,
                         search_depth: 'basic'
                     }),
@@ -920,8 +905,7 @@
 
                 if (!response.ok) {
                     if (attemptCount < this.retryCount) {
-                        const delay = Math.pow(2, attemptCount) * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay));
+                        await new Promise(r => setTimeout(r, 1000));
                         return this.fetchWithRetry(query, cacheKey, attemptCount + 1);
                     }
                     throw new Error(`API Error: ${response.status}`);
@@ -932,37 +916,15 @@
                 return data;
 
             } catch (error) {
-                if (error.name === 'AbortError') {
-                    if (attemptCount < this.retryCount) {
-                        const delay = Math.pow(2, attemptCount) * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        return this.fetchWithRetry(query, cacheKey, attemptCount + 1);
-                    }
-                    throw new Error('Request timeout - please try again');
+                if (error.name === 'AbortError' && attemptCount < this.retryCount) {
+                    return this.fetchWithRetry(query, cacheKey, attemptCount + 1);
                 }
                 throw error;
             }
         }
 
         sanitizeQuery(query) {
-            return String(query)
-                .trim()
-                .replace(/[<>&"']/g, c => ({
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '&': '&amp;',
-                    '"': '&quot;',
-                    "'": '&#x27;'
-                }[c]))
-                .slice(0, 500);
-        }
-
-        generateRequestId() {
-            return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        }
-
-        clearCache() {
-            this.cache.clear();
+            return String(query).trim().slice(0, 500);
         }
     }
 
@@ -1008,7 +970,6 @@
 
             this.elements.btn.addEventListener('click', () => this.handleSearch());
 
-            // 历史记录点击
             document.addEventListener('click', (e) => {
                 if (e.target.classList.contains('history-item')) {
                     const query = e.target.textContent.split(' - ')[0];
@@ -1026,24 +987,17 @@
 
         async handleSearch() {
             const query = this.elements.input.value.trim();
-            if (!query) {
-                this.showError('Please enter a search term');
-                return;
-            }
+            if (!query) return;
 
             this.elements.btn.disabled = true;
-            this.updateLoadingUI(true);
-
             await this.state.dispatch({ type: 'SEARCH_START' });
 
             try {
-                await this.updateLog('Accessing Datasphere...');
-                await this.sleep(400);
-
+                this.updateLog('Accessing Datasphere...');
                 const response = await this.apiClient.search(query);
 
                 if (!response.results || response.results.length === 0) {
-                    throw new Error('No results found for your query');
+                    throw new Error('No signals detected in the Datasphere');
                 }
 
                 const content = response.results
@@ -1051,9 +1005,7 @@
                     .join(' ')
                     .toLowerCase();
 
-                await this.updateLog('Calculating Vector Divergence...');
-                await this.sleep(400);
-
+                this.updateLog('Calculating Vector Divergence...');
                 await this.state.dispatch({
                     type: 'SEARCH_SUCCESS',
                     payload: { query, content }
@@ -1067,19 +1019,13 @@
                 });
             } finally {
                 this.elements.btn.disabled = false;
-                this.updateLoadingUI(false);
             }
         }
 
         render(state) {
-            this.updateLoadingUI(state.loading);
-
             if (state.errors) {
                 this.showError(state.errors);
-                return;
-            }
-
-            if (state.gua) {
+            } else if (state.gua) {
                 this.renderGua(state.gua);
                 this.renderInsights(state.insights);
                 this.renderStats(state);
@@ -1088,26 +1034,19 @@
             }
         }
 
-        async updateLog(message) {
+        updateLog(message) {
             this.elements.logStream.innerHTML = `<span class="loading-spinner"></span> ${message}`;
-            this.updateProgress(50);
-        }
-
-        updateProgress(percent) {
-            this.elements.progressFill.style.width = percent + '%';
+            this.elements.progressFill.style.width = '50%';
         }
 
         renderGua(gua) {
             this.elements.guaDraw.innerHTML = '';
-
-            const lines = gua.binary.split('');
-            lines.reverse().forEach((bit, index) => {
+            gua.binary.split('').reverse().forEach((bit, index) => {
                 const div = document.createElement('div');
                 div.className = bit === '1' ? 'y-line' : 'i-line';
                 div.style.animationDelay = `${index * 100}ms`;
                 this.elements.guaDraw.appendChild(div);
             });
-
             this.elements.guaName.textContent = gua.name;
             this.elements.guaMeaning.textContent = `${gua.meaning} / ${gua.description}`;
             this.elements.confidenceFill.style.width = (gua.confidence * 100) + '%';
@@ -1127,78 +1066,35 @@
 
         renderHistory(history) {
             this.elements.historyContainer.innerHTML = history.slice(0, 10).map(item => {
-                const time = new Date(item.timestamp).toLocaleTimeString();
-                return `<div class="history-item">${this.state.escapeHtml(item.query)} - ${item.domain} (${time})</div>`;
+                return `<div class="history-item">${this.state.escapeHtml(item.query)} - ${item.domain}</div>`;
             }).join('');
         }
 
         revealResults() {
             this.elements.displayGate.style.display = 'block';
-            this.updateLog('Analysis Complete');
-            this.updateProgress(100);
-            setTimeout(() => this.updateProgress(0), 2000);
-        }
-
-        updateLoadingUI(loading) {
-            if (loading) {
-                this.elements.logStream.innerHTML = '<span class="loading-spinner"></span> Processing...';
-            } else {
-                this.elements.logStream.innerHTML = 'Ready to analyze';
-            }
+            this.elements.logStream.innerHTML = 'Analysis Complete';
+            this.elements.progressFill.style.width = '100%';
+            setTimeout(() => this.elements.progressFill.style.width = '0', 2000);
         }
 
         showError(message) {
             this.elements.errorMessage.textContent = message;
             this.elements.errorMessage.classList.add('show');
-            setTimeout(() => {
-                this.elements.errorMessage.classList.remove('show');
-            }, 5000);
-        }
-
-        sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
+            this.elements.logStream.innerHTML = 'Ready to analyze';
+            this.elements.progressFill.style.width = '0';
+            setTimeout(() => this.elements.errorMessage.classList.remove('show'), 5000);
         }
     }
 
     // ============================================================
-    // APPLICATION INITIALIZATION
+    // INITIALIZATION
     // ============================================================
-
     document.addEventListener('DOMContentLoaded', () => {
         const state = new NoosphereState();
         const apiClient = new APIClient();
-        const uiController = new UIController(state, apiClient);
-
-        // 中间件：日志记录
-        state.use(async ({ action, state: currentState }) => {
-            console.log('[Action]', action.type, {
-                query: currentState.query,
-                domain: currentState.domain
-            });
-        });
-
-        // 中间件：性能监测
-        state.use(async ({ action }) => {
-            if (action.type === 'SEARCH_SUCCESS') {
-                console.log('[Performance] Search completed');
-            }
-        });
-
-        // 全局错误处理
-        window.addEventListener('error', (event) => {
-            console.error('[Global Error]', event.error);
-            uiController.showError('An unexpected error occurred');
-        });
-
-        window.addEventListener('unhandledrejection', (event) => {
-            console.error('[Unhandled Rejection]', event.reason);
-            uiController.showError('An unexpected error occurred');
-        });
-
-        console.log('✓ Noosphere V17.0 initialized successfully');
+        new UIController(state, apiClient);
     });
 
 </script>
-
 </body>
 </html>
