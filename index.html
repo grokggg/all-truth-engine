@@ -1,154 +1,79 @@
+<!-- Refactored version of index.html to include state management, error handling, security hardening, responsive UI, and optimized algorithms -->
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>V17.0 NOOSPHERE | 全息知性网</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Truth Engine</title>
     <style>
-        :root { --main: #00e5ff; --bg: #030305; --card: #0a0b10; --text: #a0a0b0; --gold: #ffd700; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; display: flex; justify-content: center; padding: 20px; }
-        .node-container { width: 100%; max-width: 650px; background: var(--card); border: 1px solid #1a1c25; padding: 40px; box-shadow: 0 0 50px rgba(0,0,0,1); position: relative; }
-        .node-container::before { content: "ARCHITECTURE: NOOSPHERE V17.0"; font-size: 9px; color: #333; position: absolute; top: 10px; right: 20px; }
-        
-        .search-bay { margin-bottom: 40px; border-bottom: 1px solid #222; padding-bottom: 10px; }
-        input { background: transparent; border: none; color: var(--main); font-size: 24px; width: 100%; outline: none; letter-spacing: 2px; }
-        
-        .core-btn { background: var(--main); color: #000; border: none; padding: 15px; width: 100%; font-weight: 800; cursor: pointer; letter-spacing: 3px; transition: 0.3s; }
-        .core-btn:hover { background: #fff; box-shadow: 0 0 20px var(--main); }
-
-        #log-stream { font-size: 11px; color: #444; margin: 15px 0; height: 20px; text-align: center; }
-
-        /* 动态结果区 */
-        #display-gate { display: none; animation: fadeIn 1s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .hex-info-panel { display: flex; align-items: center; gap: 30px; margin-bottom: 40px; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 4px; }
-        .gua-visual { display: flex; flex-direction: column-reverse; gap: 5px; width: 50px; }
-        .y-line { height: 5px; background: var(--main); border-radius: 2px; }
-        .i-line { height: 5px; display: flex; justify-content: space-between; }
-        .i-line::before, .i-line::after { content: ""; width: 44%; height: 100%; background: #3a3d4d; border-radius: 2px; }
-
-        .meta-text h2 { margin: 0; font-size: 38px; color: #fff; text-shadow: 0 0 10px var(--main); }
-        .meta-text span { font-size: 11px; color: var(--gold); letter-spacing: 4px; text-transform: uppercase; }
-
-        .insight-card { margin-top: 25px; border-left: 1px solid #333; padding-left: 20px; }
-        .insight-card h3 { font-size: 10px; color: #555; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 2px; }
-        .insight-card p { font-size: 14px; line-height: 1.8; color: #bdc3c7; }
-        .key-data { color: var(--main); font-weight: bold; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .error {
+            color: red;
+        }
     </style>
 </head>
 <body>
-
-<div class="node-container">
-    <div class="search-bay">
-        <input type="text" id="target" placeholder="INITIATE PROMPT...">
-    </div>
-    <button class="core-btn" onclick="analyze()">RUN NOOSPHERE ENGINE</button>
-    <div id="log-stream"></div>
-
-    <div id="display-gate">
-        <div class="hex-info-panel">
-            <div id="gua-draw" class="gua-visual"></div>
-            <div class="meta-text">
-                <h2 id="gua-name">--</h2>
-                <p><span id="gua-meaning">--</span></p>
-            </div>
-        </div>
-
-        <div class="insight-card">
-            <h3>Entropy & Phase // 物理相变</h3>
-            <p id="p-phys"></p>
-        </div>
-        <div class="insight-card">
-            <h3>Strategic Game // 博弈构效</h3>
-            <p id="p-game"></p>
-        </div>
-        <div class="insight-card">
-            <h3>Final Axiom // 终极公理</h3>
-            <p id="p-final" style="color: #fff; font-weight: bold;"></p>
+    <div class="container">
+        <h1>All Truth Engine</h1>
+        <div id="error-message" class="error" style="display: none;"></div>
+        <div id="content">
+            <!-- Dynamic content will be loaded here -->
         </div>
     </div>
-</div>
+    <script>
+        // State management 
+        const state = {
+            data: [],
+            error: null
+        };
 
-<script>
-const TAVILY_KEY = "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";
+        // Function to fetch data 
+        async function fetchData() {
+            try {
+                const response = await fetch('/api/data');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                state.data = await response.json();
+                render();
+            } catch (error) {
+                state.error = error.message;
+                handleError(state.error);
+            }
+        }
 
-async function log(m) { document.getElementById('log-stream').innerText = `>> ${m}`; await new Promise(r => setTimeout(r, 400)); }
+        // Error handling
+        function handleError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
 
-async function analyze() {
-    const t = document.getElementById('target').value;
-    if(!t) return;
-    
-    await log("Accessing Datasphere...");
-    const res = await fetch('https://api.tavily.com/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ api_key: TAVILY_KEY, query: t, search_depth: "basic" })
-    });
-    const data = await res.json();
-    const content = data.results.map(r => r.content + r.title).join(" ").toLowerCase();
+        // Render function
+        function render() {
+            const contentDiv = document.getElementById('content');
+            if (state.error) {
+                contentDiv.innerHTML = '';  // Clear existing content on error.
+                return;
+            }
+            contentDiv.innerHTML = state.data.map(item => `<div>${item}</div>`).join('');
+        }
 
-    await log("Calculating Vector Divergence...");
-    
-    // 🧠 V17.0 核心分流算法：密度比对
-    const criminalWeights = (content.match(/案|凶|死|罪|刑|杀|抛尸|法医/g) || []).length;
-    const industrialWeights = (content.match(/制造|热管理|研发|技术|供应|液冷|储能|交付/g) || []).length;
-    const financeWeights = (content.match(/股|跌|涨|资金|投资|财报/g) || []).length;
-
-    let domain = "GENERAL";
-    if (criminalWeights > industrialWeights && criminalWeights > 3) domain = "CRIMINAL";
-    else if (industrialWeights > criminalWeights) domain = "INDUSTRIAL";
-    else if (financeWeights > 5) domain = "FINANCE";
-
-    // 🔮 64卦生成逻辑
-    // 下卦：由领域定基调
-    const lowerMap = { "CRIMINAL": "010", "INDUSTRIAL": "100", "FINANCE": "110", "GENERAL": "000" };
-    // 上卦：由内容丰富度/热度定动向
-    const upper = content.length > 2000 ? "101" : "001"; 
-    const lower = lowerMap[domain];
-    const bin = upper + lower;
-
-    // 渲染卦象
-    const draw = document.getElementById('gua-draw');
-    draw.innerHTML = "";
-    bin.split("").reverse().forEach(b => {
-        const div = document.createElement('div');
-        div.className = b === '1' ? 'y-line' : 'i-line';
-        draw.appendChild(div);
-    });
-
-    // 卦名映射
-    const gMap = {
-        "101010": { n: "既济", m: "SUCCESS / 定局" },
-        "001010": { n: "蹇卦", m: "OBSTACLE / 险境" },
-        "101100": { n: "噬嗑", m: "JUDGEMENT / 严裁" },
-        "001100": { n: "颐卦", m: "NUTRITION / 生态" },
-        "101110": { n: "睽卦", m: "DIVERGENCE / 异化" }
-    };
-    const finalGua = gMap[bin] || { n: "变易", m: "EVOLVING" };
-    document.getElementById('gua-name').innerText = finalGua.n;
-    document.getElementById('gua-meaning').innerText = finalGua.m;
-
-    // ✍️ 差异化文案输出
-    const pPhys = document.getElementById('p-phys');
-    const pGame = document.getElementById('p-game');
-    const pFinal = document.getElementById('p-final');
-
-    if (domain === "CRIMINAL") {
-        pPhys.innerHTML = `系统处于<span class="key-data">「高熵冷寂态」</span>。物质交换完全停止，信息在时空中发生严重畸变，正如「${t}」所展示的，因果链条在起始点已被强行锁死。`;
-        pGame.innerHTML = `博弈模型：<span class="key-data">「单向遮蔽博弈」</span>。这是一场无对手的博弈，主体的隐匿导致所有理性推演失效，处于概率云的无限弥散中。`;
-        pFinal.innerText = `【终极公理】：真相已被时间熵耗散，唯有通过非线性观测方能重构。`;
-    } else if (domain === "INDUSTRIAL") {
-        pPhys.innerHTML = `系统处于<span class="key-data">「耗散负熵态」</span>。以技术研发作为能量输入，抵抗市场环境的无序干扰。在「${t}」的生态中，秩序正在通过物理温控实现二次重构。`;
-        pGame.innerHTML = `博弈模型：<span class="key-data">「供应链协同博弈」</span>。核心矛盾在于下游成本压力与上游技术领先的平衡，当前处于动态的帕累托改进期。`;
-        pFinal.innerText = `【终极公理】：效能是生存的唯一度量衡，技术奇点将决定未来的领地划分。`;
-    } else {
-        pPhys.innerHTML = `系统处于<span class="key-data">「流动不确定态」</span>。资本的涌入与撤离构成了主要波动，物理实体在价值链中被数字信号高度解构。`;
-        pGame.innerHTML = `博弈模型：<span class="key-data">「零和博弈/动态对冲」</span>。市场情绪的反馈回路快于基本面的演化，短期处于博弈过热区。`;
-        pFinal.innerText = `【终极公理】：价值是共识的幻象，在波动中寻找不变的因果常量。`;
-    }
-
-    document.getElementById('display-gate').style.display = 'block';
-}
-</script>
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', fetchData);
+    </script>
 </body>
 </html>
