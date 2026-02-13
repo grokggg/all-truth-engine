@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>V17.0 NOOSPHERE | 全息知性网 - All Truth Engine</title>
+    <link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="theme-color" content="#000000">
+
+<script>
+  // 激活加速器
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+  }
+</script>
+
     <style>
         * {
             margin: 0;
