@@ -4,92 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Truth Engine</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Add your styles here -->
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
 </head>
 <body>
-    <div id="app"></div>
-    <script>
-        class NoosphereState {
-            constructor() {
-                this.state = {};
-            }
-
-            getState(key) {
-                return this.state[key];
-            }
-
-            setState(key, value) {
-                this.state[key] = value;
-            }
-        }
-
-        class ApiClient {
-            constructor() {
-                this.cache = new Map();
-            }
-
-            async fetchData(url) {
-                if (this.cache.has(url)) {
-                    return this.cache.get(url);
-                }
-
-                try {
-                    const response = await fetch(url, { method: 'GET' });
-                    if (!response.ok) throw new Error('Network response was not ok');
-
-                    const data = await response.json();
-                    this.cache.set(url, data);
-                    return data;
-                } catch (error) {
-                    console.error('Fetch error:', error);
-                    throw error; // Rethrow error to be handled later
-                }
-            }
-        }
-
-        // Controller logic for handling the UI
-        function uiController(data) {
-            const appDiv = document.getElementById('app');
-            appDiv.innerHTML = `
-                <h1>All Truth Engine</h1>
-                <pre>${JSON.stringify(data, null, 2)}</pre>
-            `;
-        }
-
-        // Load data and render UI
-        async function loadData() {
-            const apiClient = new ApiClient();
-            try {
-                const data = await apiClient.fetchData('https://api.example.com/data');
-                uiController(data);
-            } catch (error) {
-                uiController({ error: error.message });
-            }
-        }
-
-        // Run the application
-        loadData();
-
-        // Additional functions for XSS prevention, performance monitoring, etc.
-        function sanitizeInput(input) {
-            const element = document.createElement('div');
-            element.innerText = input;
-            return element.innerHTML;
-        }
-
-        // Automatic retries with exponential backoff example
-        async function fetchWithRetries(url, retries = 3) {
-            let attempt = 0;
-            while (attempt < retries) {
-                try {
-                    return await fetchData(url);
-                } catch {
-                    attempt++;
-                    await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
-                }
-            }
-            throw new Error('Max retries reached');
-        }
-    </script>
+    <header>
+        <h1>Welcome to the All Truth Engine</h1>
+    </header>
+    <main>
+        <div id="loader" class="loader hidden">Loading...</div>
+        <div id="content" class="content"></div>
+        <div id="error" class="error hidden"></div>
+    </main>
+    <footer>
+        <p>&copy; 2026 Grokggg All Rights Reserved</p>
+    </footer>
 </body>
 </html>
+
+<script>
+// NoosphereState class managing the state of the application
+class NoosphereState {
+    constructor() {
+        this.states = {};
+    }
+    setState(key, value) {
+        this.states[key] = value;
+    }
+    getState(key) {
+        return this.states[key];
+    }
+}
+
+// APIClient class with caching and request handling features
+class APIClient {
+    constructor() {
+        this.cache = {};
+        this.retryCount = 0;
+    }
+    async fetchData(url) {
+        if (this.cache[url]) {
+            return this.cache[url];
+        }
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            this.cache[url] = data;
+            return data;
+        } catch (error) {
+            this.handleRetry(url);
+        }
+    }
+    handleRetry(url) {
+        this.retryCount++;
+        if (this.retryCount < 3) {
+            setTimeout(() => this.fetchData(url), 1000);
+        } else {
+            console.error('Failed to fetch data after multiple retries');
+        }
+    }
+}
+
+// UIController managing UI updates and interactions
+class UIController {
+    constructor() {
+        this.state = new NoosphereState();
+        this.apiClient = new APIClient();
+    }
+    async loadContent() {
+        const contentElement = document.getElementById('content');
+        const loader = document.getElementById('loader');
+        loader.classList.remove('hidden');
+        try {
+            const data = await this.apiClient.fetchData('/api/data');
+            contentElement.innerHTML = JSON.stringify(data);
+        } catch (error) {
+            this.showError(error.message);
+        } finally {
+            loader.classList.add('hidden');
+        }
+    }
+    showError(message) {
+        const errorElement = document.getElementById('error');
+        errorElement.innerText = message;
+        errorElement.classList.remove('hidden');
+    }
+}
+
+const uiController = new UIController();
+uiController.loadContent();
+</script>
