@@ -1,12 +1,11 @@
 {
   "name": "NOOSPHERE",
   "short_name": "NOOSPHERE",
-  "description": "The Truth Engine",
-  "start_url": "index.html",
-  "scope": "./",
+  "start_url": "/all-truth-engine/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
+  "scope": "/all-truth-engine/",
   "icons": [
     {
       "src": "icon.png",
