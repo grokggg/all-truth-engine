@@ -3,285 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>万象森罗 V10.0 - 千面熵增版</title>
+    <title>万象森罗 V12.0 - 圣人观象版</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
-        :root { --main: #9370DB; --bg: #050505; --text: #dcdcdc; --accent: #00ff9d; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); font-family: "PingFang SC", "Helvetica Neue", serif; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .bg-matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%); z-index: -1; }
-        .container { max-width: 500px; width: 100%; position: relative; z-index: 10; }
+        :root { --main: #d4af37; --bg: #0a0a0b; --text: #e0d8c0; }
+        * { box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: "PingFang SC", "楷体", serif; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .bg-pattern { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(#222 1px, transparent 0); background-size: 40px 40px; z-index: -1; opacity: 0.3; }
         
-        .card { 
-            background: rgba(20, 20, 20, 0.6); 
-            backdrop-filter: blur(10px);
-            border: 1px solid #333; 
-            border-radius: 20px; 
-            padding: 24px; 
-            box-shadow: 0 0 50px rgba(0,0,0,0.8); 
-        }
+        .container { max-width: 500px; width: 100%; background: #121214; border: 2px solid #2a2a2d; border-radius: 8px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.7); position: relative; }
+        .container::after { content: ""; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 1px solid #2a2a2d; pointer-events: none; }
 
-        h1 { font-size: 1.2rem; color: var(--main); text-align: center; letter-spacing: 3px; margin: 0 0 10px 0; text-transform: uppercase; }
-        .subtitle { font-size: 10px; text-align: center; color: #666; margin-bottom: 20px; letter-spacing: 1px; font-family: monospace; }
-        
-        input { 
-            background: rgba(0,0,0,0.5); border: 1px solid #444; color: #fff; 
-            padding: 14px; border-radius: 8px; font-size: 14px; width: 100%; 
-            margin-bottom: 15px; outline: none; transition: 0.3s; text-align: center;
-        }
-        input:focus { border-color: var(--main); box-shadow: 0 0 15px rgba(147,112,219,0.3); }
+        h1 { font-size: 20px; text-align: center; color: var(--main); letter-spacing: 5px; margin: 0 0 5px 0; }
+        .subtitle { font-size: 10px; text-align: center; color: #666; margin-bottom: 25px; }
 
-        .btn-group { display: flex; gap: 10px; }
-        button { 
-            flex: 1; padding: 14px; border: none; border-radius: 8px; font-weight: bold; 
-            cursor: pointer; letter-spacing: 1px; font-size: 12px; transition: 0.2s;
-        }
-        .btn-scan { background: #1a1a1a; color: var(--main); border: 1px solid var(--main); }
-        .btn-run { background: var(--main); color: #fff; }
-        button:active { transform: scale(0.96); opacity: 0.8; }
+        .input-box { width: 100%; position: relative; margin-bottom: 20px; }
+        input { width: 100%; background: #000; border: 1px solid #3d3d42; color: var(--main); padding: 15px; font-size: 14px; text-align: center; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--main); }
 
-        /* 动态生成的分析区域 */
-        #resultArea { margin-top: 20px; display: none; border-top: 1px solid #333; padding-top: 20px; }
-        
-        .hex-header { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; gap: 15px; }
-        .hex-icon { font-size: 48px; color: var(--main); text-shadow: 0 0 20px var(--main); }
-        .hex-info { text-align: left; }
-        .hex-name { font-size: 18px; font-weight: bold; color: #fff; }
-        .hex-meta { font-size: 11px; color: #888; font-family: monospace; }
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { padding: 15px; border: 1px solid var(--main); cursor: pointer; font-weight: bold; transition: 0.3s; font-family: inherit; }
+        .btn-intel { background: transparent; color: var(--main); }
+        .btn-divine { background: var(--main); color: #000; }
+        button:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        .log-line { 
-            font-size: 13px; line-height: 1.6; color: #bbb; margin-bottom: 12px; 
-            padding-left: 10px; border-left: 2px solid #333; transition: 0.3s;
-        }
-        .log-line strong { color: var(--main); }
-        .highlight { color: var(--accent); }
+        #resultArea { margin-top: 30px; display: none; border-top: 1px solid #333; padding-top: 20px; }
+        .gua-display { text-align: center; margin-bottom: 25px; }
+        .gua-mark { font-size: 60px; color: var(--main); margin-bottom: 5px; text-shadow: 0 0 15px rgba(212,175,55,0.4); }
+        .gua-name { font-size: 22px; font-weight: bold; letter-spacing: 3px; }
 
-        .tavily-data { display: none; } /* 隐藏原来的输入框，让界面更干净 */
-        
-        #exportBtn { width: 100%; background: #fff; color: #000; margin-top: 20px; display: none; }
-        .loading { font-size: 12px; color: #666; text-align: center; display: none; font-family: monospace; }
+        .dimension { margin-bottom: 20px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 4px; }
+        .dim-tag { font-size: 11px; color: var(--main); margin-bottom: 8px; border-left: 3px solid var(--main); padding-left: 8px; }
+        .dim-content { font-size: 14px; line-height: 1.8; color: #bbb; text-align: justify; }
+        .highlight { color: #fff; text-decoration: underline var(--main); }
 
+        #log { font-size: 11px; color: #555; text-align: center; margin-top: 10px; min-height: 15px; }
     </style>
 </head>
 <body>
 
-<div class="bg-matrix"></div>
+<div class="bg-pattern"></div>
 
-<div class="container">
-    <div class="card" id="captureArea">
-        <h1>万象森罗 V10.0</h1>
-        <div class="subtitle">CHAOS NARRATIVE ENGINE // 千面熵增版</div>
-        
-        <input type="text" id="target" placeholder="🔮 输入观测对象 (如: 豆瓣 / 某人名)">
-        
-        <div class="tavily-data">
-            <input id="p_val"><input id="e_val"><input id="s_val"><input id="t_val">
+<div class="container" id="captureArea">
+    <h1>万象森罗 · 圣人观象</h1>
+    <div class="subtitle">UNIVERSAL INFERENCE ENGINE V12.0 // BY GEMINI ARCHITECT</div>
+    
+    <div class="input-box">
+        <input type="text" id="target" placeholder="▶ 输入观测目标 ◀">
+    </div>
+
+    <div class="btn-row">
+        <button onclick="fetchIntel()" class="btn-intel" id="btn1">① 垂象取义</button>
+        <button onclick="runDivination()" class="btn-divine" id="btn2" disabled>② 演卦推命</button>
+    </div>
+
+    <div id="log"></div>
+
+    <div id="resultArea">
+        <div class="gua-display">
+            <div id="resIcon" class="gua-mark"></div>
+            <div id="resName" class="gua-name"></div>
         </div>
 
-        <div id="loadingStatus" class="loading"></div>
-
-        <div class="btn-group">
-            <button onclick="fetchData()" class="btn-scan">📡 扫描现实场</button>
-            <button onclick="runInference()" class="btn-run" id="runBtn" disabled>⚡ 启动熵增推演</button>
+        <div class="dimension">
+            <div class="dim-tag">【天时 · 宏观大势】</div>
+            <div id="dim1" class="dim-content"></div>
         </div>
 
-        <div id="resultArea">
-            <div class="hex-header">
-                <div id="resIcon" class="hex-icon"></div>
-                <div class="hex-info">
-                    <div id="resName" class="hex-name"></div>
-                    <div id="resCode" class="hex-meta"></div>
-                </div>
-            </div>
-            
-            <div id="narrativeBox"></div>
-            
-            <button onclick="exportReport()" id="exportBtn">📸 固化观测结果</button>
+        <div class="dimension">
+            <div class="dim-tag">【地利 · 情报具象】</div>
+            <div id="dim2" class="dim-content"></div>
         </div>
+
+        <div class="dimension">
+            <div class="dim-tag">【人和 · 众生纠缠】</div>
+            <div id="dim3" class="dim-content"></div>
+        </div>
+
+        <div class="dimension">
+            <div class="dim-tag">【神机 · 终极判词】</div>
+            <div id="dim4" class="dim-content"></div>
+        </div>
+
+        <button onclick="exportImg()" style="width:100%; background:#eee; color:#000; border:none; margin-top:20px;">留存天机拓片</button>
     </div>
 </div>
 
 <script>
 const TAVILY_KEY = "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"; 
 
-// 🧬 1. 扩充后的【千面文案库】
-// 每一类至少 10 种变体，确保排列组合不重复
-const corpus = {
-    // 现状 Status (基于 天时+地利)
-    status: [
-        "观测显示，目标正处于「高熵离散」状态。旧有的秩序边界正在溶解，而新的核心尚未凝结。",
-        "能量场呈现出罕见的「超稳态结构」，看似波澜不惊，实则内部正在进行剧烈的反向吞噬。",
-        "目标已进入「螺旋上升」的加速期，但这种上升伴随着对底部基础的过度透支。",
-        "当前处于「价值真空期」，外部流量虽然嘈杂，但实质性的留存转化率正在遭遇物理瓶颈。",
-        "呈现出典型的「回光返照」特征，短期内的活跃无法掩盖长期生命周期的衰减趋势。",
-        "处于「茧房固化」阶段，内部逻辑自洽但与外部大环境逐渐脱钩，形成孤岛效应。",
-        "正经历一场「降维打击」后的阵痛期，碎片化的重组正在缓慢进行。",
-        "表现为「双重人格」式的分裂，表层的繁荣与底层的焦虑形成鲜明的量子纠缠。",
-        "进入了「静默发酵」阶段，所有的显性数据都只是冰山一角，庞大的暗流正在汇聚。",
-        "处于「临界爆发点」的前夜，高密度的能量积压已到达阈值，微小的火星即可引爆。"
-    ],
-    // 隐患 Risk (基于 变量+人声)
-    risk: [
-        "核心隐患在于「认知错位」。决策层以为在掌控局势，实则已被算法茧房反向驯化。",
-        "致命变量来自「信任链条的断裂」。一旦用户/受众的集体潜意识达成共识，坍缩将在瞬间完成。",
-        "警惕「虚荣指标」的麻痹作用。繁华的数据泡沫掩盖了真实的失血点。",
-        "风险源于「过度的路径依赖」。对旧有成功模式的执着，正在成为新时代的墓志铭。",
-        "真正的威胁不在外部，而在内部生态的「基因突变」，某种次生文化正在反噬宿主。",
-        "因果链条中存在「延迟支付」的代价。此刻的安逸，其实是在透支 2026 年的生存额度。",
-        "面临「流动性枯竭」的危机，不仅仅是资金，更是关注度与情感连接的枯竭。",
-        "最大的黑天鹅是「监管维度的降维」。在更高阶的规则面前，现有的逻辑不堪一击。",
-        "存在「回音壁效应」导致的误判，听到的都是赞歌，从而忽略了悬崖边缘的风声。",
-        "隐患在于「平庸之恶」的蔓延，缺乏锐度的妥协正在让整个系统缓慢坏死。"
-    ],
-    // 策略 Strategy (基于 神机)
-    strategy: [
-        "【破局】：必须进行一次「自杀式重生」。主动砍掉 50% 的冗余触角，回归最原始的单点价值。",
-        "【指引】：执行「边缘突围」策略。主流赛道已拥堵，唯有在被忽视的边缘地带才能重建秩序。",
-        "【劝诫】：以静制动。当前的每一次盲目挣扎，都像是在流沙中越陷越深。保持静止是最高级的运动。",
-        "【战术】：实施「寄生战术」。依附于更强大的势能实体，借船出海，完成早期的原始积累。",
-        "【方向】：向「内」求索。停止外部扩张，将所有资源用于加固底层的护城河。",
-        "【警告】：立刻切断与「负资产」的连接。无论是人、事还是观念，必须进行物理隔绝。",
-        "【建议】：寻找「异质同构」的盟友。利用跨界思维打破当前的存量博弈僵局。",
-        "【心法】：接受「不完美」。试图面面俱到只会导致全面平庸，极致的长板才是生存之道。",
-        "【筹码】：将「时间」作为杠杆。不要争一时之长短，布局三年后的复利效应。",
-        "【终极】：回归「第一性原理」。抛弃所有花哨的技巧，直面最本质的需求痛点。"
-    ]
-};
-
-const trigrams = [
-    {n:"乾", i:"䷀", d:"纯阳刚健"}, {n:"兑", i:"䷹", d:"泽水悦动"}, 
-    {n:"离", i:"䷝", d:"火势依附"}, {n:"震", i:"䷲", d:"雷霆激发"},
-    {n:"巽", i:"䷸", d:"风木渗透"}, {n:"坎", i:"䷜", d:"水险陷落"}, 
-    {n:"艮", i:"䷳", d:"山岳静止"}, {n:"坤", i:"䷷", d:"大地承载"}
+const GUA_DATA = [
+    { n: "乾为天", i: "䷀", d: "元亨利贞，极阳之象。", m: "处于剧烈扩张与秩序重建的巅峰。" },
+    { n: "兑为泽", i: "䷹", d: "刚中柔外，喜悦之象。", m: "信息流转极快，表象繁华下暗藏交换。" },
+    { n: "离为火", i: "䷝", d: "附丽光明，明察之象。", m: "局势处于聚光灯下，因果透明化。" },
+    { n: "震为雷", i: "䷲", e: "震惊百里, 动荡之象。", m: "突发变数正在打破现有的沉闷平衡。" },
+    { n: "巽为风", i: "䷸", d: "随风潜入，渗透之象。", m: "某种力量正在无声无息地进行结构转移。" },
+    { n: "坎为水", i: "䷜", d: "陷险而进，重重之象。", m: "处于极其危险的低谷，真相被多层屏蔽。" },
+    { n: "艮为山", i: "䷳", d: "动静得宜，止步之象。", m: "遭遇不可逾越的阻碍，需向内求索。" },
+    { n: "坤为地", i: "䷷", d: "柔顺利贞，承载之象。", m: "厚积薄发，一切变动皆在暗处滋生。" }
 ];
 
-// 工具函数：简单的哈希生成器
-function getHash(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        hash = (hash << 5) - hash + str.charCodeAt(i);
-        hash |= 0; 
-    }
-    return Math.abs(hash);
-}
+let capturedIntel = [];
 
-// 模拟打字机
-async function typeLine(container, text, delay=20) {
-    const div = document.createElement('div');
-    div.className = 'log-line';
-    container.appendChild(div);
+async function fetchIntel() {
+    const t = document.getElementById('target').value;
+    if(!t) return alert("请输入目标");
+    const log = document.getElementById('log');
+    log.innerText = "正在感应场域，同步真实情报...";
     
-    // 简单的高亮处理：把【】中的内容高亮
-    const parts = text.split(/(【.*?】|「.*?」)/g);
-    
-    for (let part of parts) {
-        if (!part) continue;
-        const span = document.createElement('span');
-        if (part.startsWith('【') || part.startsWith('「')) span.className = 'highlight';
-        div.appendChild(span);
-        
-        for (let char of part) {
-            span.innerHTML += char;
-            await new Promise(r => setTimeout(r, Math.random() * delay + 5)); // 随机延迟更像打字
-        }
-    }
-}
-
-async function fetchData() {
-    const target = document.getElementById('target').value;
-    if(!target) return alert("请输入观测对象");
-    
-    const btn = document.querySelector('.btn-scan');
-    const loader = document.getElementById('loadingStatus');
-    btn.disabled = true;
-    loader.style.display = 'block';
-    
-    let logs = ["正在建立量子通道...", "检索全网情报切片...", "校准现实偏差值..."];
-    for(let log of logs) {
-        loader.innerText = log;
-        await new Promise(r => setTimeout(r, 600));
-    }
-
     try {
         const response = await fetch('https://api.tavily.com/search', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ api_key: TAVILY_KEY, query: target, search_depth: "basic", max_results: 3 })
+            body: JSON.stringify({ api_key: TAVILY_KEY, query: t, search_depth: "basic", max_results: 5 })
         });
         const data = await response.json();
-        const res = data.results || [];
-        
-        document.getElementById('p_val').value = res[0] ? res[0].title : "未知变量";
-        document.getElementById('e_val').value = res[1] ? res[1].title : "未知场域";
-        
-        loader.innerText = "✅ 情报锚定完成";
-        document.getElementById('runBtn').disabled = false;
-        document.getElementById('runBtn').style.boxShadow = "0 0 15px var(--main)";
+        capturedIntel = data.results || [];
+        log.innerText = "✅ 现实观测完成，情报已入卦。";
+        document.getElementById('btn2').disabled = false;
     } catch (e) {
-        loader.innerText = "⚠️ 离线模式已启动";
-        document.getElementById('p_val').value = "本地推演";
-        document.getElementById('runBtn').disabled = false;
+        log.innerText = "⚠️ 外部受阻，启用先天八卦推演。";
+        document.getElementById('btn2').disabled = false;
     }
-    btn.disabled = false;
 }
 
-async function runInference() {
+function runDivination() {
     const target = document.getElementById('target').value;
-    const p = document.getElementById('p_val').value;
-    const e = document.getElementById('e_val').value;
+    const log = document.getElementById('log');
+    log.innerText = "正在拨动太极，推演因果...";
     
-    const box = document.getElementById('resultArea');
-    const narrativeBox = document.getElementById('narrativeBox');
-    box.style.display = 'block';
-    narrativeBox.innerHTML = ''; // 清空旧结果
-    document.getElementById('exportBtn').style.display = 'none';
-
-    // 🧮 核心算法：基于多重哈希的【非线性选择】
-    // 利用 target 的不同部分产生不同的种子，避免所有段落都指向同一个倾向
-    const seedMain = getHash(target);
-    const seedTime = getHash(target + new Date().toDateString()); // 每天变一次
-    const seedContext = getHash(p + e); // 结合抓取到的新闻变
-
-    // 1. 确定卦象 (8种)
-    const guaIndex = seedMain % 8;
-    const gua = trigrams[guaIndex];
+    // 🧮 核心演卦逻辑：基于情报内容的语义倾向定卦
+    let score = 0;
+    const allText = capturedIntel.map(i => i.content + i.title).join("");
     
-    // 2. 确定变爻 (动爻) - 影响隐患
-    const changeIndex = seedContext % 6; 
+    // 语义权重分流
+    if (/(死|查|捕|案|跌|损|险|疑)/.test(allText)) score -= 10;
+    if (/(涨|新|升|胜|活|成|解|立)/.test(allText)) score += 10;
     
-    // 3. 从文案库中抽取 (10种)
-    // 巧妙点：现状、隐患、策略 使用不同的余数算法，确保不会每次都选第1条
-    const idxStatus = (seedMain + seedContext) % corpus.status.length;
-    const idxRisk = (seedMain * 2 + changeIndex) % corpus.risk.length;
-    const idxStrategy = (seedTime + seedMain) % corpus.strategy.length;
+    const hash = target.split('').reduce((a,b)=>((a<<5)-a)+b.charCodeAt(0),0);
+    const finalIndex = Math.abs(hash + score) % 8;
+    const gua = GUA_DATA[finalIndex];
 
-    // 渲染头部
+    // 渲染结果
     document.getElementById('resIcon').innerText = gua.i;
-    document.getElementById('resName').innerText = `${gua.n}为${gua.d.substring(2,4)}`;
-    document.getElementById('resCode').innerText = `ID: ${seedMain.toString(16).toUpperCase()} // T: ${(idxStatus+1)}.${(idxRisk+1)}.${(idxStrategy+1)}`;
+    document.getElementById('resName').innerText = gua.n;
 
-    // 逐行打印内容
-    await typeLine(narrativeBox, `► 现实场域判定：\n${corpus.status[idxStatus]}`);
-    await new Promise(r => setTimeout(r, 400));
-    
-    // 插入一条基于抓取内容的动态分析
-    const newsFragment = p.length > 5 ? p.substring(0, 10) + "..." : "暗物质波动";
-    await typeLine(narrativeBox, `► 情报干涉修正：\n检测到外部变量「${newsFragment}」正在加剧系统的非线性漂移。`);
-    await new Promise(r => setTimeout(r, 400));
+    // 注入真实情报的“易理化”描述
+    const news1 = capturedIntel[0] ? capturedIntel[0].title.substring(0,15) : "混沌未开";
+    const news2 = capturedIntel[1] ? capturedIntel[1].content.substring(0,18) : "幽冥之境";
 
-    await typeLine(narrativeBox, `► 核心隐患洞察：\n${corpus.risk[idxRisk]}`);
-    await new Promise(r => setTimeout(r, 400));
+    document.getElementById('dim1').innerHTML = `卦象显示为「${gua.n}」。从天道来看，目标正处于<span class="highlight">${gua.m}</span>其势在「${news1}」中已有显现，预示着宏观层面的秩序正在发生不可逆的倾斜。`;
 
-    await typeLine(narrativeBox, `► 终极降维策略：\n${corpus.strategy[idxStrategy]}`);
-    
-    document.getElementById('exportBtn').style.display = 'block';
+    document.getElementById('dim2').innerHTML = `地利聚焦于局部变量。情报切片提及「${news2}...」，这正是此卦的<span class="highlight">阴阳交互点</span>。在特定场域内，真实与虚幻的界限已因该情报而坍缩。`;
+
+    document.getElementById('dim3').innerHTML = `众生念力纠缠。对于「${target}」，人心的贪婪与恐惧正在被卦象中的<span class="highlight">${gua.d.substring(0,4)}</span>所引导。若顺势而为则亨，若逆天而行则吝。`;
+
+    document.getElementById('dim4').innerHTML = `<b>【圣人判词】：</b>天垂象，见吉凶。针对「${target}」，当代因果已成。唯有把握「${news1.substring(0,5)}」这一线神机，方能在「${gua.n}」的局势中寻得一线生机。`;
+
+    document.getElementById('resultArea').style.display = 'block';
 }
 
-function exportReport() {
-    html2canvas(document.getElementById('captureArea'), { backgroundColor: '#111' }).then(c => {
+function exportImg() {
+    html2canvas(document.getElementById('captureArea'), { backgroundColor: '#0a0a0b' }).then(c => {
         const a = document.createElement('a');
         a.href = c.toDataURL();
-        a.download = `熵增推演_${Date.now()}.png`;
+        a.download = `万象拓片_${Date.now()}.png`;
         a.click();
     });
 }
