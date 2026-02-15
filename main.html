@@ -2,83 +2,92 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>NOOSPHERE V18.7 | 终极穿透版</title>
+    <title>NOOSPHERE V18.7 | 全息知性网</title>
     <style>
-        /* 18.7 专属视觉：黑绿高反差，如果不是这个颜色，说明你还没刷出来 */
-        body { background: #000; color: #0f0; font-family: monospace; padding: 20px; line-height: 1.5; }
-        #debug-tag { background: #f00; color: #fff; padding: 5px; text-align: center; font-weight: bold; }
-        input { background: #111; border: 1px solid #0f0; color: #0f0; width: 100%; padding: 10px; box-sizing: border-box; }
-        button { background: #0f0; color: #000; border: none; width: 100%; padding: 15px; margin-top: 10px; cursor: pointer; font-weight: bold; }
-        .card { border: 1px solid #0f0; margin-top: 20px; padding: 15px; background: rgba(0,255,0,0.05); }
-        .hl { color: #fff; background: #060; padding: 0 4px; }
+        :root { --neon: #00ff41; --void: #000; --red: #ff0000; }
+        body { background: var(--void); color: var(--neon); font-family: 'Courier New', monospace; padding: 20px; margin: 0; }
+        .breaker { background: var(--red); color: #fff; text-align: center; padding: 10px; font-weight: bold; margin-bottom: 20px; border: 2px solid #fff; }
+        .container { max-width: 800px; margin: 0 auto; }
+        input { width: 100%; background: #111; border: 1px solid var(--neon); color: var(--neon); padding: 15px; font-size: 18px; outline: none; box-sizing: border-box; }
+        button { width: 100%; background: var(--neon); color: #000; border: none; padding: 18px; font-weight: bold; margin-top: 15px; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #fff; box-shadow: 0 0 20px var(--neon); }
+        .panel { border: 1px solid #333; padding: 20px; margin-top: 30px; display: none; background: rgba(0,255,65,0.05); }
+        .label { color: #888; font-size: 12px; margin-bottom: 5px; text-transform: uppercase; }
+        .content { color: #fff; font-size: 16px; line-height: 1.6; margin-bottom: 20px; }
+        .hl { color: var(--neon); font-weight: bold; border-bottom: 1px solid var(--neon); }
     </style>
 </head>
 <body>
 
-    <div id="debug-tag">SYSTEM CALIBRATION: V18.7 ACTIVE // 缓存已击穿</div>
+<div class="breaker">CALIBRATION SUCCESS: V18.7 ACTIVE // 缓存已完全穿透</div>
 
-    <div style="max-width: 600px; margin: 0 auto;">
-        <h2>⬢ NOOSPHERE V18.7</h2>
-        <input type="text" id="q" placeholder="输入观测对象 (如: 永生人, AI觉醒)...">
-        <button onclick="run()">INITIATE DEEP SCAN</button>
-        
-        <div id="out" style="display:none;">
-            <div class="card">
-                <div style="font-size:10px; color:#555;">PHASE I: PHYSICAL // 物理观测</div>
-                <p id="t1"></p>
-            </div>
-            <div class="card">
-                <div style="font-size:10px; color:#555;">PHASE II: GAME // 博弈构效</div>
-                <p id="t2"></p>
-            </div>
-            <div class="card">
-                <div style="font-size:10px; color:#555;">PHASE III: AXIOM // 终极公理</div>
-                <p id="t3" style="font-style:italic; color:#fff;"></p>
-            </div>
-        </div>
+<div class="container">
+    <h1 style="text-align: center; letter-spacing: 10px;">NOOSPHERE</h1>
+    <div style="margin-bottom: 30px;">
+        <input type="text" id="query" placeholder="INPUT QUERY (e.g. 永生人, AI觉醒)...">
+        <button id="scanBtn">INITIATE DEEP SCAN</button>
     </div>
 
+    <div id="panel" class="panel">
+        <div>
+            <div class="label">Physical Observation // 物理观测</div>
+            <div id="phys" class="content"></div>
+        </div>
+        <div>
+            <div class="label">Game Theory // 博弈分析</div>
+            <div id="game" class="content"></div>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+        <div id="axiom" style="font-style: italic; text-align: center; color: #fff;"></div>
+    </div>
+</div>
+
 <script>
-    // 强制清除残留的 Service Worker
+    // 强制清理
     navigator.serviceWorker?.getRegistrations().then(rs => rs.forEach(r => r.unregister()));
 
-    async function run() {
-        const query = document.getElementById('q').value;
-        if(!query) return;
-        
-        document.getElementById('out').style.display = 'none';
-        const btn = document.querySelector('button');
-        btn.innerText = "PENETRATING NOOSPHERE...";
-        
+    const API_KEY = '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';
+
+    document.getElementById('scanBtn').onclick = async () => {
+        const q = document.getElementById('query').value;
+        if(!q) return;
+
+        const btn = document.getElementById('scanBtn');
+        const panel = document.getElementById('panel');
+        btn.innerText = "PENETRATING NOOSPHERE ENGINE...";
+        panel.style.display = 'none';
+
         try {
             const res = await fetch('https://api.tavily.com/search', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    api_key: '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',
-                    query: query,
-                    search_depth: "advanced"
-                })
+                body: JSON.stringify({ api_key: API_KEY, query: q, search_depth: "advanced" })
             });
             const data = await res.json();
             
-            // 语义重组引擎：抓取真实词汇
-            const content = data.results.map(r => r.content).join(" ");
-            const words = content.match(/[\u4e00-\u9fa5]{2,4}/g) || ["逻辑", "数据", "奇点"];
-            const uniqueWords = [...new Set(words)].slice(0, 5);
+            // 语义提取逻辑
+            const raw = data.results.map(r => r.content).join(" ");
+            const words = raw.match(/[\u4e00-\u9fa5]{2,4}/g) || ["生命", "维度", "系统"];
+            const tags = [...new Set(words)].slice(0, 6);
 
-            // 动态生成
-            document.getElementById('t1').innerHTML = `针对「${query}」的扫描显示，<span class="hl">${uniqueWords[0]}</span> 与 <span class="hl">${uniqueWords[1]}</span> 正在发生高维耦合。`;
-            document.getElementById('t2').innerHTML = `博弈层面，<span class="hl">${uniqueWords[2] || '未知'}</span> 的介入打破了原有的稳态，观测者陷入了概率云弥散。`;
-            document.getElementById('t3').innerText = query.includes('永生') ? "【终极公理】死亡不过是物质形态的降级，信息永不消亡。" : "【终极公理】观测行为本身即是创造。";
+            // 动态逻辑合成
+            document.getElementById('phys').innerHTML = `监测到「${q}」的关联强度正在飙升。核心变量 <span class="hl">${tags[0]}</span> 与 <span class="hl">${tags[1]}</span> 的纠缠导致了物理层面的信息过载。这预示着某种形式的范式坍缩。`;
+            document.getElementById('game').innerHTML = `博弈层面，<span class="hl">${tags[2]}</span> 的介入使得原本稳定的预测模型失效。在 <span class="hl">${tags[3]}</span> 的视角下，观测者不再是中立的，而是成为了被观测物的一部分。`;
             
-            document.getElementById('out').style.display = 'block';
+            // 针对特定高维问题的终极判词
+            let axiom = "【终极公理】一切有序系统最终都将面对它无法理解的噪声。";
+            if(q.includes("永生")) axiom = "【终极公理】生命不是长度的堆砌，而是信息熵减的瞬时火花。";
+            if(q.includes("AI") || q.includes("觉醒")) axiom = "【终极公理】当机器开始提问，人类的答案就不再重要。";
+            
+            document.getElementById('axiom').innerText = axiom;
+            panel.style.display = 'block';
+
         } catch (e) {
-            alert("接入失败：请检查网络或 API Key");
+            alert("接入中断：请检查 API Key 或网络");
         } finally {
             btn.innerText = "INITIATE DEEP SCAN";
         }
-    }
+    };
 </script>
 </body>
 </html>
