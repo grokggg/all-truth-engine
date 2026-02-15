@@ -2,201 +2,83 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    
-    <title>NOOSPHERE V18.6 | 缓存粉碎验证版</title>
-
-    <script>
-        // 【第一步：暗杀旧版加速器】
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                for(let registration of registrations) {
-                    registration.unregister();
-                    console.log('旧内核 SW 已强制卸载');
-                }
-            });
-        }
-        // 【第二步：清空缓存库】
-        if ('caches' in window) {
-            caches.keys().then(function(names) {
-                for (let name of names) caches.delete(name);
-            });
-        }
-    </script>
-
+    <title>NOOSPHERE V18.7 | 终极穿透版</title>
     <style>
-        :root { --neon: #00f3ff; --alert: #ff4444; --bg: #050505; }
-        body { background: var(--bg); color: #a0a0b0; font-family: 'Segoe UI', monospace; margin: 0; padding: 0; }
-        
-        /* 验证水印：如果生效，你会看到这个红条 */
-        .ver-check { background: var(--alert); color: #fff; text-align: center; padding: 10px; font-weight: bold; font-size: 14px; letter-spacing: 2px; }
-        
-        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
-        .header { text-align: center; border-bottom: 1px solid #222; margin-bottom: 30px; padding-bottom: 20px; }
-        .header h1 { color: var(--neon); font-size: 28px; letter-spacing: 5px; margin: 0; }
-
-        .input-box { position: relative; }
-        input { width: 100%; background: transparent; border: none; border-bottom: 2px solid #333; color: #fff; font-size: 20px; padding: 15px 0; outline: none; }
-        input:focus { border-color: var(--neon); }
-        
-        button { width: 100%; background: var(--neon); color: #000; border: none; padding: 15px; font-weight: bold; margin-top: 20px; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #fff; box-shadow: 0 0 20px var(--neon); }
-        button:disabled { background: #222; color: #444; }
-
-        #log { font-size: 12px; color: #555; margin-top: 10px; height: 20px; text-align: center; }
-
-        /* 结果区域 */
-        #result-gate { display: none; margin-top: 40px; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .gua-info { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; background: #0a0a0a; padding: 20px; border: 1px solid #1a1a1a; }
-        .gua-lines { display: flex; flex-direction: column-reverse; gap: 5px; width: 50px; }
-        .line { height: 6px; width: 100%; }
-        .yang { background: var(--neon); }
-        .yin { display: flex; justify-content: space-between; }
-        .yin::before, .yin::after { content: ''; width: 40%; height: 100%; background: #333; }
-
-        .card { margin-bottom: 20px; border-left: 3px solid var(--neon); padding-left: 20px; }
-        .card h3 { font-size: 12px; color: #666; text-transform: uppercase; }
-        .card p { font-size: 15px; line-height: 1.6; color: #ccc; }
-        .hl { color: var(--neon); font-weight: bold; }
+        /* 18.7 专属视觉：黑绿高反差，如果不是这个颜色，说明你还没刷出来 */
+        body { background: #000; color: #0f0; font-family: monospace; padding: 20px; line-height: 1.5; }
+        #debug-tag { background: #f00; color: #fff; padding: 5px; text-align: center; font-weight: bold; }
+        input { background: #111; border: 1px solid #0f0; color: #0f0; width: 100%; padding: 10px; box-sizing: border-box; }
+        button { background: #0f0; color: #000; border: none; width: 100%; padding: 15px; margin-top: 10px; cursor: pointer; font-weight: bold; }
+        .card { border: 1px solid #0f0; margin-top: 20px; padding: 15px; background: rgba(0,255,0,0.05); }
+        .hl { color: #fff; background: #060; padding: 0 4px; }
     </style>
 </head>
 <body>
 
-    <div class="ver-check">CORE V18.6: CACHE BREAKER ACTIVE // 验证：这是最新内核</div>
+    <div id="debug-tag">SYSTEM CALIBRATION: V18.7 ACTIVE // 缓存已击穿</div>
 
-    <div class="container">
-        <div class="header">
-            <h1>⬢ NOOSPHERE V18.6</h1>
-            <p style="font-size: 10px; color: #444;">SEMANTIC RECONSTRUCTION ENGINE</p>
-        </div>
-
-        <div class="input-box">
-            <input type="text" id="queryInput" placeholder="请输入观测目标..." autocomplete="off">
-            <button id="runBtn">INITIATE ANALYSIS</button>
-            <div id="log">SYSTEM READY</div>
-        </div>
-
-        <div id="result-gate">
-            <div class="gua-info">
-                <div id="guaDraw" class="gua-lines"></div>
-                <div>
-                    <h2 id="guaName" style="margin:0; color:#fff;">--</h2>
-                    <div id="tagCloud" style="display:flex; gap:5px; margin-top:5px;"></div>
-                </div>
-            </div>
-
+    <div style="max-width: 600px; margin: 0 auto;">
+        <h2>⬢ NOOSPHERE V18.7</h2>
+        <input type="text" id="q" placeholder="输入观测对象 (如: 永生人, AI觉醒)...">
+        <button onclick="run()">INITIATE DEEP SCAN</button>
+        
+        <div id="out" style="display:none;">
             <div class="card">
-                <h3>Observation // 观测结果</h3>
-                <p id="p-phys"></p>
+                <div style="font-size:10px; color:#555;">PHASE I: PHYSICAL // 物理观测</div>
+                <p id="t1"></p>
             </div>
-            <div class="card" style="border-color: #ffd700;">
-                <h3>Game Theory // 博弈分析</h3>
-                <p id="p-game"></p>
+            <div class="card">
+                <div style="font-size:10px; color:#555;">PHASE II: GAME // 博弈构效</div>
+                <p id="t2"></p>
             </div>
-            <div class="card" style="border-color: #fff;">
-                <h3>Final Axiom // 终极公理</h3>
-                <p id="p-final" style="font-style:italic; color:#fff;"></p>
+            <div class="card">
+                <div style="font-size:10px; color:#555;">PHASE III: AXIOM // 终极公理</div>
+                <p id="t3" style="font-style:italic; color:#fff;"></p>
             </div>
         </div>
     </div>
 
 <script>
-    const API_KEY = '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';
+    // 强制清除残留的 Service Worker
+    navigator.serviceWorker?.getRegistrations().then(rs => rs.forEach(r => r.unregister()));
 
-    const Engine = {
-        // 智能分类与关键词提取
-        analyze(text, query) {
-            const q = query.toLowerCase();
-            const words = text.match(/[\u4e00-\u9fa5]{2,4}/g) || [];
-            const tags = [...new Set(words)].filter(w => w.length > 1).slice(0, 5);
+    async function run() {
+        const query = document.getElementById('q').value;
+        if(!query) return;
+        
+        document.getElementById('out').style.display = 'none';
+        const btn = document.querySelector('button');
+        btn.innerText = "PENETRATING NOOSPHERE...";
+        
+        try {
+            const res = await fetch('https://api.tavily.com/search', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    api_key: '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',
+                    query: query,
+                    search_depth: "advanced"
+                })
+            });
+            const data = await res.json();
             
-            let dom = 'GENERAL';
-            if (/(生|意识|魂|奇点|宇宙|觉醒|神)/.test(q)) dom = 'METAPHYSICS';
-            else if (/(股|跌|涨|金|财)/.test(q)) dom = 'FINANCE';
-            else if (/(制造|芯|技术|研发)/.test(q)) dom = 'INDUSTRIAL';
+            // 语义重组引擎：抓取真实词汇
+            const content = data.results.map(r => r.content).join(" ");
+            const words = content.match(/[\u4e00-\u9fa5]{2,4}/g) || ["逻辑", "数据", "奇点"];
+            const uniqueWords = [...new Set(words)].slice(0, 5);
+
+            // 动态生成
+            document.getElementById('t1').innerHTML = `针对「${query}」的扫描显示，<span class="hl">${uniqueWords[0]}</span> 与 <span class="hl">${uniqueWords[1]}</span> 正在发生高维耦合。`;
+            document.getElementById('t2').innerHTML = `博弈层面，<span class="hl">${uniqueWords[2] || '未知'}</span> 的介入打破了原有的稳态，观测者陷入了概率云弥散。`;
+            document.getElementById('t3').innerText = query.includes('永生') ? "【终极公理】死亡不过是物质形态的降级，信息永不消亡。" : "【终极公理】观测行为本身即是创造。";
             
-            return { dom, tags };
-        },
-
-        // 动态判词生成 (完全重写，拒绝死板模板)
-        generate(dom, query, tags) {
-            const t1 = tags[0] || '逻辑变量';
-            const t2 = tags[1] || '认知碎片';
-            const t3 = tags[2] || '因果律';
-
-            const data = {
-                METAPHYSICS: {
-                    p: `在「${query}」的维度下，生物熵增定律已被观测到局部扰动。通过对 <span class="hl">${t1}</span> 的解析，系统发现意识模组正在尝试脱离碳基束缚。`,
-                    g: `这是一场关于 <span class="hl">${t2}</span> 的神学与技术的最终碰撞。观测者正在利用 <span class="hl">${t3}</span> 重新定义“生命”的边界。`,
-                    a: `【终极公理】死亡只是一个待修复的系统Bug。`
-                },
-                GENERAL: {
-                    p: `针对「${query}」的信息流呈现非线性爆发。关键因子 <span class="hl">${t1}</span> 的涌现打破了原有的平衡态。`,
-                    g: `在 <span class="hl">${t2}</span> 的干预下，多方利益博弈陷入了 <span class="hl">${t3}</span> 陷阱，真相正在坍缩。`,
-                    a: `【终极公理】你所看到的真相，取决于你观测的深度。`
-                }
-            };
-            return data[dom] || data.GENERAL;
+            document.getElementById('out').style.display = 'block';
+        } catch (e) {
+            alert("接入失败：请检查网络或 API Key");
+        } finally {
+            btn.innerText = "INITIATE DEEP SCAN";
         }
-    };
-
-    const UI = {
-        btn: document.getElementById('runBtn'),
-        input: document.getElementById('queryInput'),
-        log: document.getElementById('log'),
-        gate: document.getElementById('result-gate'),
-
-        async start() {
-            const val = this.input.value.trim();
-            if(!val) return;
-
-            this.btn.disabled = true;
-            this.log.innerText = "正在穿透数据深渊...";
-            
-            try {
-                const res = await fetch('https://api.tavily.com/search', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ api_key: API_KEY, query: val, search_depth: "advanced" })
-                });
-                const json = await res.json();
-                const allTxt = json.results.map(r => r.content).join(" ");
-                
-                const report = Engine.analyze(allTxt, val);
-                const txt = Engine.generate(report.dom, val, report.tags);
-
-                // 渲染
-                document.getElementById('p-phys').innerHTML = txt.p;
-                document.getElementById('p-game').innerHTML = txt.g;
-                document.getElementById('p-final').innerText = txt.a;
-                document.getElementById('guaName').innerText = report.dom;
-                document.getElementById('tagCloud').innerHTML = report.tags.map(t => `<span style="font-size:10px; border:1px solid #333; padding:2px 5px;">${t}</span>`).join('');
-                
-                // 绘制一个随机卦
-                const draw = document.getElementById('guaDraw');
-                draw.innerHTML = '';
-                for(let i=0; i<6; i++) {
-                    const l = document.createElement('div');
-                    l.className = `line ${Math.random() > 0.5 ? 'yang' : 'yin'}`;
-                    draw.appendChild(l);
-                }
-
-                this.gate.style.display = 'block';
-                this.log.innerText = "观测已完成";
-            } catch(e) {
-                this.log.innerText = "连接中断，请检查 API KEY 或网络";
-            } finally {
-                this.btn.disabled = false;
-            }
-        }
-    };
-
-    UI.btn.onclick = () => UI.start();
+    }
 </script>
 </body>
 </html>
