@@ -3,292 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOOSPHERE V18.5 | 语义觉醒版</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <title>NOOSPHERE V18.6 | 缓存粉碎验证版</title>
+
+    <script>
+        // 【第一步：暗杀旧版加速器】
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                    console.log('旧内核 SW 已强制卸载');
+                }
+            });
+        }
+        // 【第二步：清空缓存库】
+        if ('caches' in window) {
+            caches.keys().then(function(names) {
+                for (let name of names) caches.delete(name);
+            });
+        }
+    </script>
+
     <style>
-        :root { --neon: #00f3ff; --void: #050505; --panel: #0a0f14; --alert: #ff2a2a; --gold: #c5a059; }
-        body { background: var(--void); color: #a0a0b0; font-family: 'Segoe UI', monospace; display: flex; justify-content: center; min-height: 100vh; margin: 0; overflow-x: hidden; }
-        .container { width: 100%; max-width: 850px; padding: 40px; margin-top: 5vh; }
+        :root { --neon: #00f3ff; --alert: #ff4444; --bg: #050505; }
+        body { background: var(--bg); color: #a0a0b0; font-family: 'Segoe UI', monospace; margin: 0; padding: 0; }
         
-        /* 抬头 */
-        .header { text-align: center; border-bottom: 1px solid #1f2230; padding-bottom: 25px; margin-bottom: 30px; }
-        .header h1 { color: var(--neon); letter-spacing: 6px; font-size: 32px; margin: 0; text-shadow: 0 0 20px rgba(0, 243, 255, 0.3); }
-        .status-bar { font-size: 10px; color: var(--gold); display: flex; justify-content: space-between; margin-top: 10px; text-transform: uppercase; }
+        /* 验证水印：如果生效，你会看到这个红条 */
+        .ver-check { background: var(--alert); color: #fff; text-align: center; padding: 10px; font-weight: bold; font-size: 14px; letter-spacing: 2px; }
+        
+        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; border-bottom: 1px solid #222; margin-bottom: 30px; padding-bottom: 20px; }
+        .header h1 { color: var(--neon); font-size: 28px; letter-spacing: 5px; margin: 0; }
 
-        /* 输入区 */
-        .input-zone { position: relative; margin-bottom: 40px; }
-        input { background: transparent; border: none; border-bottom: 2px solid #333; color: #fff; font-size: 24px; width: 100%; padding: 15px 0; outline: none; transition: 0.3s; font-family: 'Courier New'; }
+        .input-box { position: relative; }
+        input { width: 100%; background: transparent; border: none; border-bottom: 2px solid #333; color: #fff; font-size: 20px; padding: 15px 0; outline: none; }
         input:focus { border-color: var(--neon); }
-        .run-btn { width: 100%; background: var(--neon); color: #000; border: none; padding: 18px; font-weight: 900; letter-spacing: 3px; margin-top: 20px; cursor: pointer; clip-path: polygon(0 0, 100% 0, 100% 70%, 96% 100%, 0 100%); transition: 0.2s; }
-        .run-btn:hover { background: #fff; box-shadow: 0 0 25px var(--neon); }
-        .run-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+        
+        button { width: 100%; background: var(--neon); color: #000; border: none; padding: 15px; font-weight: bold; margin-top: 20px; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #fff; box-shadow: 0 0 20px var(--neon); }
+        button:disabled { background: #222; color: #444; }
 
-        /* 动态日志 */
-        .console-log { font-family: monospace; font-size: 11px; color: #444; height: 20px; margin-top: 8px; }
+        #log { font-size: 12px; color: #555; margin-top: 10px; height: 20px; text-align: center; }
 
-        /* 结果展示门 */
-        #gate { display: none; animation: bootUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes bootUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        /* 结果区域 */
+        #result-gate { display: none; margin-top: 40px; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* 卦象与核心数据 */
-        .dashboard { display: grid; grid-template-columns: 80px 1fr; gap: 30px; margin-bottom: 40px; background: rgba(255,255,255,0.02); padding: 25px; border: 1px solid #1f2230; }
-        .gua-box { display: flex; flex-direction: column-reverse; gap: 5px; width: 60px; }
-        .line { height: 6px; width: 100%; transition: width 0.5s; }
-        .yang { background: var(--neon); box-shadow: 0 0 8px var(--neon); }
+        .gua-info { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; background: #0a0a0a; padding: 20px; border: 1px solid #1a1a1a; }
+        .gua-lines { display: flex; flex-direction: column-reverse; gap: 5px; width: 50px; }
+        .line { height: 6px; width: 100%; }
+        .yang { background: var(--neon); }
         .yin { display: flex; justify-content: space-between; }
         .yin::before, .yin::after { content: ''; width: 40%; height: 100%; background: #333; }
-        
-        .big-title { font-size: 42px; color: #fff; line-height: 1; margin: 0; }
-        .sub-title { color: var(--gold); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; margin-top: 5px; display: block; }
-        
-        /* 智能判词卡片 */
-        .card { margin-bottom: 20px; padding-left: 15px; border-left: 2px solid #333; position: relative; }
-        .card h3 { font-size: 10px; color: #555; margin: 0 0 8px 0; letter-spacing: 1px; }
-        .card p { margin: 0; font-size: 15px; line-height: 1.6; color: #ccc; }
-        
-        /* 动态高亮 */
-        .highlight { color: var(--neon); font-weight: bold; border-bottom: 1px dashed var(--neon); cursor: help; }
-        .warn { color: var(--alert); font-weight: bold; }
 
-        /* 标签云 */
-        .tag-cloud { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
-        .tag { font-size: 10px; padding: 2px 6px; border: 1px solid #333; color: #666; }
-
+        .card { margin-bottom: 20px; border-left: 3px solid var(--neon); padding-left: 20px; }
+        .card h3 { font-size: 12px; color: #666; text-transform: uppercase; }
+        .card p { font-size: 15px; line-height: 1.6; color: #ccc; }
+        .hl { color: var(--neon); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>NOOSPHERE</h1>
-        <div class="status-bar">
-            <span>V18.5 SEMANTIC CORE</span>
-            <span>SYSTEM READY</span>
+    <div class="ver-check">CORE V18.6: CACHE BREAKER ACTIVE // 验证：这是最新内核</div>
+
+    <div class="container">
+        <div class="header">
+            <h1>⬢ NOOSPHERE V18.6</h1>
+            <p style="font-size: 10px; color: #444;">SEMANTIC RECONSTRUCTION ENGINE</p>
         </div>
-    </div>
 
-    <div class="input-zone">
-        <input type="text" id="input" placeholder="输入高维问题 (如: 永生, AI觉醒, 命运)..." autocomplete="off">
-        <button class="run-btn" id="btn">INITIATE SCAN</button>
-        <div class="console-log" id="log">Waiting for input...</div>
-    </div>
+        <div class="input-box">
+            <input type="text" id="queryInput" placeholder="请输入观测目标..." autocomplete="off">
+            <button id="runBtn">INITIATE ANALYSIS</button>
+            <div id="log">SYSTEM READY</div>
+        </div>
 
-    <div id="gate">
-        <div class="dashboard">
-            <div id="gua-visual" class="gua-box"></div>
-            <div>
-                <h2 class="big-title" id="out-name">--</h2>
-                <span class="sub-title" id="out-eng">--</span>
-                <div class="tag-cloud" id="out-tags"></div>
+        <div id="result-gate">
+            <div class="gua-info">
+                <div id="guaDraw" class="gua-lines"></div>
+                <div>
+                    <h2 id="guaName" style="margin:0; color:#fff;">--</h2>
+                    <div id="tagCloud" style="display:flex; gap:5px; margin-top:5px;"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Observation // 观测结果</h3>
+                <p id="p-phys"></p>
+            </div>
+            <div class="card" style="border-color: #ffd700;">
+                <h3>Game Theory // 博弈分析</h3>
+                <p id="p-game"></p>
+            </div>
+            <div class="card" style="border-color: #fff;">
+                <h3>Final Axiom // 终极公理</h3>
+                <p id="p-final" style="font-style:italic; color:#fff;"></p>
             </div>
         </div>
-
-        <div class="card" style="border-color: var(--neon);">
-            <h3>PHASE I: PHYSICAL OBSERVATION // 物理层观测</h3>
-            <p id="txt-phys"></p>
-        </div>
-
-        <div class="card" style="border-color: var(--gold);">
-            <h3>PHASE II: GAME THEORY // 博弈层构效</h3>
-            <p id="txt-game"></p>
-        </div>
-
-        <div class="card" style="border-color: #fff;">
-            <h3>PHASE III: FINAL AXIOM // 终极公理</h3>
-            <p id="txt-axiom" style="color:#fff; font-style:italic;"></p>
-        </div>
     </div>
-</div>
 
 <script>
-    // 配置你的 Key
-    const API_KEY = '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'; 
+    const API_KEY = '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';
 
-    // ==========================================
-    // V18.5 核心逻辑：语义碎片重组引擎
-    // ==========================================
-    
-    const Core = {
-        // 1. 深度内容扫描：不再依赖简单的关键词匹配，而是寻找语境
-        analyzeContext(text, query) {
-            const t = text.toLowerCase();
+    const Engine = {
+        // 智能分类与关键词提取
+        analyze(text, query) {
             const q = query.toLowerCase();
+            const words = text.match(/[\u4e00-\u9fa5]{2,4}/g) || [];
+            const tags = [...new Set(words)].filter(w => w.length > 1).slice(0, 5);
             
-            // 提取搜索结果中的实词 (模拟 NLP 提取)
-            // 简单的正则提取，抓取 text 中引号内的词，或者长词
-            const rawWords = text.match(/[\u4e00-\u9fa5]{2,5}/g) || [];
-            // 过滤掉常见虚词
-            const stopWords = ['搜索', '结果', '网页', '点击', '相关', '内容', '我们', '可以', '没有', '什么', '这个', '那个'];
-            const keyTerms = [...new Set(rawWords)].filter(w => !stopWords.includes(w) && w !== query).slice(0, 6);
-
-            // 动态判断领域
-            let domain = 'GENERAL';
-            if (/(永生|意识|灵魂|神|死亡|复活|奇点|ufo|外星|维度|觉醒)/.test(q + t)) domain = 'METAPHYSICS'; // 玄学/高概念
-            else if (/(股|跌|涨|资金|财报|市盈率|投资)/.test(q + t)) domain = 'FINANCE';
-            else if (/(制造|产能|液冷|芯片|技术|研发)/.test(q + t)) domain = 'INDUSTRIAL';
-            else if (/(电影|票房|明星|演员|瓜|塌房)/.test(q + t)) domain = 'ENTERTAINMENT';
-            else if (/(案|杀|刑|死|罪|警)/.test(q + t)) domain = 'CRIMINAL';
-
-            // 强制修正：如果问题包含“永生”、“AI觉醒”，绝对不能是 CRIMINAL
-            if (domain === 'CRIMINAL' && (domain === 'METAPHYSICS' || q.includes('生'))) domain = 'METAPHYSICS';
-
-            return { domain, keyTerms };
+            let dom = 'GENERAL';
+            if (/(生|意识|魂|奇点|宇宙|觉醒|神)/.test(q)) dom = 'METAPHYSICS';
+            else if (/(股|跌|涨|金|财)/.test(q)) dom = 'FINANCE';
+            else if (/(制造|芯|技术|研发)/.test(q)) dom = 'INDUSTRIAL';
+            
+            return { dom, tags };
         },
 
-        // 2. 动态造句机：这是解决“模板感”的核心
-        synthesizeNarrative(domain, query, keyTerms) {
-            // 如果抓不到关键词，用备用词
-            const Term1 = keyTerms[0] || '未知变量';
-            const Term2 = keyTerms[1] || '隐形数据';
-            const Term3 = keyTerms[2] || '黑箱';
+        // 动态判词生成 (完全重写，拒绝死板模板)
+        generate(dom, query, tags) {
+            const t1 = tags[0] || '逻辑变量';
+            const t2 = tags[1] || '认知碎片';
+            const t3 = tags[2] || '因果律';
 
-            const narratives = {
-                METAPHYSICS: { // 针对 永生、AI觉醒、命运
-                    phys: `系统检测到针对「${query}」的定义边界正在溶解。常规物理法则在此处失效，取而代之的是关于 <span class="highlight">${Term1}</span> 和 <span class="highlight">${Term2}</span> 的激烈争论。这是一次典型的“范式转移”前兆。`,
-                    game: `人类试图扮演造物主的博弈。关键筹码不再是金钱，而是对 <span class="highlight">${Term3}</span> 的解释权。现有技术正在试图突破生物学设定的“防火墙”。`,
-                    axiom: `【终极公理】碳基的肉体是暂时的，信息的熵减才是永恒的。`
+            const data = {
+                METAPHYSICS: {
+                    p: `在「${query}」的维度下，生物熵增定律已被观测到局部扰动。通过对 <span class="hl">${t1}</span> 的解析，系统发现意识模组正在尝试脱离碳基束缚。`,
+                    g: `这是一场关于 <span class="hl">${t2}</span> 的神学与技术的最终碰撞。观测者正在利用 <span class="hl">${t3}</span> 重新定义“生命”的边界。`,
+                    a: `【终极公理】死亡只是一个待修复的系统Bug。`
                 },
-                FINANCE: { // 针对 股票、公司
-                    phys: `资本流动的湍流状态。围绕 <span class="highlight">${Term1}</span> 的交易行为导致了局部市场的热力学失衡。价格不仅仅是数字，是 <span class="highlight">${Term2}</span> 的情绪投影。`,
-                    game: `零和博弈与非理性繁荣的叠加。大资金正在利用 <span class="highlight">${Term3}</span> 制造信息迷雾，散户在噪音中寻找信号。`,
-                    axiom: `【终极公理】市场从未定价错误，它只是在给贪婪定价。`
-                },
-                INDUSTRIAL: { // 针对 实体产业
-                    phys: `确定性的机械秩序。从 <span class="highlight">${Term1}</span> 到 <span class="highlight">${Term2}</span>，系统通过精确的能量转化抵抗熵增。这是一条被严格优化的因果链。`,
-                    game: `供应链的丛林法则。谁掌握了 <span class="highlight">${Term3}</span> 的核心技术，谁就拥有了降维打击的权力。效率是唯一的生存指标。`,
-                    axiom: `【终极公理】原子世界没有魔法，只有工艺的极限。`
-                },
-                ENTERTAINMENT: { // 针对 明星、八卦
-                    phys: `高频的注意力脉冲。关于「${query}」的信息流瞬间淹没了理性讨论。公众情绪被 <span class="highlight">${Term1}</span> 符号化，形成共振。`,
-                    game: `流量的收割与反噬。偶像作为一种虚拟资产，其价值完全取决于 <span class="highlight">${Term2}</span> 的维护成本。`,
-                    axiom: `【终极公理】娱乐是麻醉剂，也是社会压力的泄压阀。`
-                },
-                CRIMINAL: { // 针对 真实案件
-                    phys: `社会契约的断裂点。通过 <span class="highlight">${Term1}</span>，我们观测到了系统内部的腐坏。熵值在瞬间达到峰值。`,
-                    game: `真相与掩盖的猫鼠游戏。在 <span class="highlight">${Term2}</span> 的阴影下，正义需要付出额外的时间成本。`,
-                    axiom: `【终极公理】每一个案件都是社会系统的一个Bug。`
-                },
-                GENERAL: { // 兜底
-                    phys: `针对「${query}」的观测结果呈现离散分布。数据云中包含了 <span class="highlight">${Term1}</span> 等强相关因子，但因果方向尚不明朗。`,
-                    game: `多元利益主体的纠缠。在涉及 <span class="highlight">${Term2}</span> 的议题上，共识极难达成。`,
-                    axiom: `【终极公理】未知是最大的恐惧，也是最大的诱惑。`
+                GENERAL: {
+                    p: `针对「${query}」的信息流呈现非线性爆发。关键因子 <span class="hl">${t1}</span> 的涌现打破了原有的平衡态。`,
+                    g: `在 <span class="hl">${t2}</span> 的干预下，多方利益博弈陷入了 <span class="hl">${t3}</span> 陷阱，真相正在坍缩。`,
+                    a: `【终极公理】你所看到的真相，取决于你观测的深度。`
                 }
             };
-
-            return narratives[domain];
-        },
-
-        // 3. 卦象映射 (增加神秘感)
-        generateGua(domain, query) {
-            const maps = {
-                METAPHYSICS: { name: '无妄', eng: 'INNOCENCE / 天雷无妄', bin: '111001' }, // 不可妄为
-                FINANCE: { name: '大有', eng: 'POSSESSION / 火天大有', bin: '101111' }, // 收获
-                INDUSTRIAL: { name: '需卦', eng: 'WAITING / 水天需', bin: '010111' }, // 饮食宴乐
-                ENTERTAINMENT: { name: '咸卦', eng: 'INFLUENCE / 泽山咸', bin: '011100' }, // 感应
-                CRIMINAL: { name: '讼卦', eng: 'CONFLICT / 天水讼', bin: '010110' }, // 争辩
-                GENERAL: { name: '未济', eng: 'NOT YET / 火水未济', bin: '101010' }
-            };
-            
-            // 加入一点随机扰动，让同一个问题偶尔有变爻
-            const random = Math.random();
-            if(random > 0.8) return { name: '鼎卦', eng: 'CAULDRON / 火风鼎', bin: '011101' };
-            
-            return maps[domain] || maps.GENERAL;
+            return data[dom] || data.GENERAL;
         }
     };
 
-    // ==========================================
-    // 交互逻辑
-    // ==========================================
     const UI = {
-        input: document.getElementById('input'),
-        btn: document.getElementById('btn'),
+        btn: document.getElementById('runBtn'),
+        input: document.getElementById('queryInput'),
         log: document.getElementById('log'),
-        gate: document.getElementById('gate'),
+        gate: document.getElementById('result-gate'),
 
-        async run() {
-            const query = this.input.value.trim();
-            if (!query) return;
+        async start() {
+            const val = this.input.value.trim();
+            if(!val) return;
 
-            this.loading(true);
+            this.btn.disabled = true;
+            this.log.innerText = "正在穿透数据深渊...";
             
             try {
-                // 1. Tavily 搜索
                 const res = await fetch('https://api.tavily.com/search', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        api_key: API_KEY,
-                        query: query,
-                        search_depth: "basic",
-                        max_results: 5
-                    })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ api_key: API_KEY, query: val, search_depth: "advanced" })
                 });
-                const data = await res.json();
+                const json = await res.json();
+                const allTxt = json.results.map(r => r.content).join(" ");
                 
-                // 将搜索结果合并成一个大文本块，供分析引擎使用
-                const rawText = data.results.map(r => r.title + " " + r.content).join(" ");
-                
-                // 2. 运行 V18.5 核心
-                this.log.innerText = "Analyzing Semantic Vectors...";
-                
-                // 2.1 分析上下文 & 提取关键词
-                const ctx = Core.analyzeContext(rawText, query);
-                
-                // 2.2 生成叙事 (注入关键词)
-                const narrative = Core.synthesizeNarrative(ctx.domain, query, ctx.keyTerms);
-                
-                // 2.3 生成卦象
-                const gua = Core.generateGua(ctx.domain, query);
+                const report = Engine.analyze(allTxt, val);
+                const txt = Engine.generate(report.dom, val, report.tags);
 
-                // 3. 渲染
-                this.render(gua, narrative, ctx.keyTerms);
+                // 渲染
+                document.getElementById('p-phys').innerHTML = txt.p;
+                document.getElementById('p-game').innerHTML = txt.g;
+                document.getElementById('p-final').innerText = txt.a;
+                document.getElementById('guaName').innerText = report.dom;
+                document.getElementById('tagCloud').innerHTML = report.tags.map(t => `<span style="font-size:10px; border:1px solid #333; padding:2px 5px;">${t}</span>`).join('');
+                
+                // 绘制一个随机卦
+                const draw = document.getElementById('guaDraw');
+                draw.innerHTML = '';
+                for(let i=0; i<6; i++) {
+                    const l = document.createElement('div');
+                    l.className = `line ${Math.random() > 0.5 ? 'yang' : 'yin'}`;
+                    draw.appendChild(l);
+                }
 
-            } catch (e) {
-                console.error(e);
-                this.log.innerText = "LINK FAILED: Check Proxy or API Quota.";
+                this.gate.style.display = 'block';
+                this.log.innerText = "观测已完成";
+            } catch(e) {
+                this.log.innerText = "连接中断，请检查 API KEY 或网络";
             } finally {
-                this.loading(false);
-            }
-        },
-
-        render(gua, txt, tags) {
-            // 渲染卦
-            const box = document.getElementById('gua-visual');
-            box.innerHTML = '';
-            gua.bin.split('').forEach(bit => {
-                const l = document.createElement('div');
-                l.className = `line ${bit === '1' ? 'yang' : 'yin'}`;
-                box.appendChild(l);
-            });
-            
-            document.getElementById('out-name').innerText = gua.name;
-            document.getElementById('out-eng').innerText = gua.eng;
-            document.getElementById('out-tags').innerHTML = tags.map(t => `<span class="tag">${t}</span>`).join('');
-
-            // 渲染文字 (支持 HTML 高亮)
-            document.getElementById('txt-phys').innerHTML = txt.phys;
-            document.getElementById('txt-game').innerHTML = txt.game;
-            document.getElementById('txt-axiom').innerHTML = txt.axiom;
-
-            this.gate.style.display = 'block';
-        },
-
-        loading(isLoading) {
-            if(isLoading) {
-                this.btn.disabled = true;
-                this.btn.innerText = "CONNECTING TO NOOSPHERE...";
-                this.log.innerText = "Scanning Deep Web Data...";
-                this.gate.style.display = 'none';
-            } else {
                 this.btn.disabled = false;
-                this.btn.innerText = "INITIATE SCAN";
-                this.log.innerText = "Ready.";
             }
         }
     };
 
-    UI.btn.onclick = () => UI.run();
-    UI.input.onkeypress = (e) => { if(e.key === 'Enter') UI.run(); };
+    UI.btn.onclick = () => UI.start();
 </script>
 </body>
 </html>
